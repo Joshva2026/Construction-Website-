@@ -324,7 +324,8 @@
       if (!/^[+\d][\d\s()-]{6,}$/.test(phone)) return showMsg(msg, "Please enter a valid phone number.", "err");
       if (d.email && !/^\S+@\S+\.\S+$/.test(d.email)) return showMsg(msg, "Please enter a valid email.", "err");
       store.enquiries.unshift({
-        id: uid(), name, phone, email: d.email.trim(), type: d.type, message,
+        id: uid(), name, phone, email: d.email.trim(), type: d.type, landArea: d.landArea.trim(),
+        budget: d.budget.trim(), planGuide: d.planGuide, startDate: d.startDate, message,
         date: new Date().toISOString(), done: false
       });
       if (!saveStore()) return;
@@ -503,7 +504,7 @@
         <div class="enq-item ${e.done ? "done" : ""}">
           <strong>${esc(e.name)}</strong> &middot; <a href="tel:${esc(e.phone)}">${esc(e.phone)}</a>
           ${e.email ? ` &middot; <a href="mailto:${esc(e.email)}">${esc(e.email)}</a>` : ""}
-          <p><span class="chip">${esc(e.type)}</span> <small class="note">${new Date(e.date).toLocaleString()}</small></p>
+          <p><span class="chip">${esc(e.type)}</span> ${e.landArea ? `<span class="chip">${esc(e.landArea)}</span>` : ""} ${e.budget ? `<span class="chip">${esc(e.budget)}</span>` : ""} ${e.planGuide ? `<span class="chip">${esc(e.planGuide)}</span>` : ""} <small class="note">${new Date(e.date).toLocaleString()}</small></p>
           <p>${esc(e.message)}</p>
           <div class="toolbar">
             <button class="btn small ghost" data-action="toggle-enq" data-id="${e.id}">${e.done ? "Mark as open" : "Mark as handled"}</button>
@@ -618,8 +619,8 @@
       }
       else if (action === "export-enquiries") {
         const quote = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
-        const rows = [["Date", "Name", "Phone", "Email", "Type", "Message", "Handled"]]
-          .concat(store.enquiries.map((x) => [x.date, x.name, x.phone, x.email, x.type, x.message, x.done ? "yes" : "no"]));
+        const rows = [["Date", "Name", "Phone", "Email", "Type", "Land Area", "Budget", "Plan Guide", "Start Date", "Message", "Handled"]]
+          .concat(store.enquiries.map((x) => [x.date, x.name, x.phone, x.email, x.type, x.landArea, x.budget, x.planGuide, x.startDate, x.message, x.done ? "yes" : "no"]));
         downloadFile("enquiries.csv", rows.map((r) => r.map(quote).join(",")).join("\n"), "text/csv");
       }
       else if (action === "export") {
@@ -719,11 +720,14 @@
   /* ---------------- Motion: stat count-up and fade-in on scroll ---------------- */
   function initMotion() {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const targets = document.querySelectorAll(".section-head, .service, .stat, .reveal");
-    targets.forEach((el) => el.classList.add("reveal"));
+    const targets = document.querySelectorAll(".section-head, .service, .stat, .reveal, .card");
 
     if (reduce || !("IntersectionObserver" in window)) {
-      targets.forEach((el) => el.classList.add("in"));
+      targets.forEach((el) => {
+        el.classList.add("in");
+        el.style.opacity = "1";
+        el.style.transform = "none";
+      });
       document.querySelectorAll("[data-count]").forEach((el) => { el.textContent = el.dataset.count; });
       return;
     }
@@ -735,8 +739,23 @@
         if (en.target.classList.contains("stat")) countUp(en.target.querySelector("[data-count]"));
         io.unobserve(en.target);
       });
-    }, { threshold: 0.15 });
-    targets.forEach((el) => io.observe(el));
+    }, { threshold: 0.1, rootMargin: "0px 0px -10% 0px" });
+
+    targets.forEach((el) => {
+      el.classList.add("reveal");
+      io.observe(el);
+    });
+
+    // Fallback: reveal everything after 3 seconds in case observer misses
+    setTimeout(() => {
+      document.querySelectorAll(".reveal").forEach((el) => {
+        if (!el.classList.contains("in")) {
+          el.classList.add("in");
+          el.style.opacity = "1";
+          el.style.transform = "none";
+        }
+      });
+    }, 3000);
   }
 
   function countUp(el) {

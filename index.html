@@ -148,8 +148,26 @@
               <option>Consultation only</option>
             </select>
           </label>
+          <div class="two-col">
+            <label>Land area (sq ft / sq m)
+              <input name="landArea" type="text" placeholder="e.g. 2400 sq ft" />
+            </label>
+            <label>Estimated budget
+              <input name="budget" type="text" placeholder="e.g. ₹50 lakhs" />
+            </label>
+          </div>
+          <label>Do you need a plan guide / design consultation?
+            <select name="planGuide">
+              <option value="yes">Yes, I need a plan guide</option>
+              <option value="no">No, I have my own plan</option>
+              <option value="maybe">Not sure, need advice</option>
+            </select>
+          </label>
+          <label>Preferred start date
+            <input name="startDate" type="date" />
+          </label>
           <label>Message *
-            <textarea name="message" rows="5" required maxlength="2000" placeholder="Tell us about your site, plot size, timeline and budget"></textarea>
+            <textarea name="message" rows="5" required maxlength="2000" placeholder="Tell us about your site, plot size, timeline and any special requirements"></textarea>
           </label>
           <button type="submit" class="btn full">Send enquiry</button>
           <p class="form-msg" id="enquiryMsg" role="status"></p>

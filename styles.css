@@ -144,6 +144,7 @@ a { color: inherit; text-decoration: none; }
   overflow: hidden;
   background: var(--ink);
   color: var(--white);
+  height: 400vh;
 }
 .hero-stage {
   position: sticky;
@@ -492,6 +493,11 @@ textarea { resize: vertical; }
 
 /* ---------- ADMIN ---------- */
 .admin { background: var(--paper-2); border-top: 1px solid var(--line); }
+#adminLogin {
+  max-width: 400px;
+  margin: 0 auto 2rem;
+  padding: 1.5rem;
+}
 .admin-bar {
   max-width: 1280px; margin: 0 auto 1.25rem;
   display: flex; justify-content: space-between; align-items: center;

@@ -200,20 +200,20 @@
       v.muted = true;
       v.playsInline = true;
       v.preload = "auto";
+      v.loop = true;
+      v.autoplay = true;
       v.setAttribute("muted", "");
       v.setAttribute("playsinline", "");
       v.setAttribute("aria-hidden", "true");
       v.classList.add("active");
       v.addEventListener("loadedmetadata", () => {
         hero.ready = true;
-        // Desktop: do NOT autoplay — video controlled by scroll scrub in updateHero()
-        // Mobile: play normally
-        if (hero.isMobile) v.play().catch(() => {});
+        v.play().catch(() => {}); // autoplay on both desktop and mobile
         onScrollHero();
       });
       v.addEventListener("canplay", () => {
         hero.ready = true;
-        if (hero.isMobile) v.play().catch(() => {});
+        v.play().catch(() => {});
         onScrollHero();
       });
       v.addEventListener("error", () => {
@@ -238,7 +238,7 @@
         const img = document.createElement("img");
         img.src = src;
         img.alt = "";
-        img.loading = "lazy";
+        img.loading = "eager";
         if (i === 0) img.classList.add("active", "loaded");
         else img.classList.add("loaded");
         container.appendChild(img);
@@ -247,11 +247,6 @@
       hero.ready = true;
     } else {
       showHeroEmpty("Add construction footage in the admin panel under Settings &rarr; Hero footage.");
-    }
-
-    // Mobile: play video normally, don't scrub by scroll
-    if (hero.isMobile && hero.video) {
-      hero.video.play().catch(() => {});
     }
 
     onScrollHero();
@@ -283,40 +278,16 @@
   }
 
   function updateHero() {
-    const track = hero.track;
-    if (!track) return;
+    // Hero is now a normal full-screen section — no scroll scrub needed.
+    // Build meter shows a static reference value.
+    const pct = 0;
+    if (hero.pct) hero.pct.textContent = "0%";
+    if (hero.bar) hero.bar.style.width = "0%";
+    if (hero.phase) hero.phase.textContent = "Site preparation";
 
-    const isMobile = hero.isMobile;
-    const total = isMobile ? 0 : (track.offsetHeight - window.innerHeight);
-    const scrolled = isMobile ? 0 : -track.getBoundingClientRect().top;
-    const p = total > 0 ? clamp(scrolled / total, 0, 1) : 0;
-
-    // Desktop: scrub video / photos by scroll
-    if (!isMobile) {
-      if (hero.video && hero.ready && isFinite(hero.video.duration)) {
-        const target = p * hero.video.duration;
-        if (Math.abs(hero.video.currentTime - target) > 0.03) {
-          if (hero.video.fastSeek) hero.video.fastSeek(target);
-          else hero.video.currentTime = target;
-        }
-      }
-      if (hero.photos.length) {
-        const idx = Math.round(p * (hero.photos.length - 1));
-        hero.photos.forEach((img, i) => img.classList.toggle("active", i === idx));
-      }
-    }
-
-    const pct = Math.round(p * 100);
-    if (hero.pct) hero.pct.textContent = pct + "%";
-    if (hero.bar) hero.bar.style.width = pct + "%";
-
-    let phase = PHASES[0][1];
-    PHASES.forEach(([at, name]) => { if (p >= at) phase = name; });
-    if (hero.phase) hero.phase.textContent = phase;
-
-    // Mobile: hide scroll hint because hero isn't pinned
+    // Mobile: hide scroll hint since hero isn't pinned
     if (hero.hint) {
-      hero.hint.style.display = isMobile ? "none" : "block";
+      hero.hint.style.display = "none";
     }
   }
 

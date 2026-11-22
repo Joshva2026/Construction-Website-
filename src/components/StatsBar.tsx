@@ -70,9 +70,8 @@ export default function StatsBar({ stats: propStats }: { stats?: SiteConfig["sta
           {statsList.map((stat, idx) => (
             <div
               key={stat.label}
-              className={`flex flex-col items-center sm:items-start text-center sm:text-left ${
-                idx > 0 ? "pt-6 sm:pt-0 sm:pl-6 lg:pl-8" : ""
-              }`}
+              className={`flex flex-col items-center sm:items-start text-center sm:text-left ${idx > 0 ? "pt-6 sm:pt-0 sm:pl-6 lg:pl-8" : ""
+                }`}
             >
               {/* Stat Icon & Label */}
               <div className="flex items-center gap-2 mb-2">

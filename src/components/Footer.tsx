@@ -11,23 +11,26 @@ export default function Footer() {
           {/* Company Info */}
           <div className="space-y-4">
             <div className="flex items-center gap-3 text-white">
-              <span
-                className="w-7 h-7 rounded-md bg-brand-primary flex items-center justify-center text-brand-ink font-black text-sm"
+              <div
+                className="w-8 h-8 rounded-lg bg-brand-primary flex items-center justify-center text-brand-ink font-black text-base shadow-md"
                 aria-hidden="true"
               >
-                ▲
-              </span>
+                J
+              </div>
               <span className="font-bold text-lg tracking-wide uppercase">
                 {siteConfig.name}
               </span>
             </div>
             <p className="text-sm text-slate-400 leading-relaxed">
               {siteConfig.tagline}. Directed by {siteConfig.engineerName}. Committed to structural
-              safety, quality construction, and transparent delivery.
+              safety, quality construction, and transparent turnkey delivery across Dindigul and Tamil Nadu.
             </p>
-            <div className="pt-2">
+            <div className="pt-2 flex flex-wrap gap-2">
               <span className="inline-block px-3 py-1 text-xs font-semibold rounded bg-brand-primary/10 text-brand-primary border border-brand-primary/20">
-                Licensed Civil Engineer
+                126+ Projects Handed Over
+              </span>
+              <span className="inline-block px-3 py-1 text-xs font-semibold rounded bg-white/5 text-slate-300 border border-white/10">
+                Dindigul, Tamil Nadu
               </span>
             </div>
           </div>
@@ -51,7 +54,7 @@ export default function Footer() {
                   href="/projects"
                   className="hover:text-brand-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-primary rounded"
                 >
-                  Completed & Live Projects
+                  All Projects (126+ Delivered)
                 </Link>
               </li>
               <li>
@@ -59,7 +62,7 @@ export default function Footer() {
                   href="/projects?category=Residential"
                   className="hover:text-brand-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-primary rounded"
                 >
-                  Residential Developments
+                  Residential Duplexes & Villas
                 </Link>
               </li>
               <li>
@@ -67,7 +70,7 @@ export default function Footer() {
                   href="/projects?category=Commercial"
                   className="hover:text-brand-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-primary rounded"
                 >
-                  Commercial Infrastructure
+                  Commercial Complexes & PEB
                 </Link>
               </li>
               <li>
@@ -84,7 +87,7 @@ export default function Footer() {
           {/* Services */}
           <div className="space-y-4">
             <h3 className="text-sm font-semibold text-white uppercase tracking-wider">
-              Our Expertise
+              Engineering Services
             </h3>
             <ul className="space-y-2.5 text-sm">
               {siteConfig.services.map((service) => (
@@ -98,7 +101,7 @@ export default function Footer() {
           {/* Contact Details */}
           <div className="space-y-4">
             <h3 className="text-sm font-semibold text-white uppercase tracking-wider">
-              Get In Touch
+              Dindigul Office
             </h3>
             <ul className="space-y-3 text-sm">
               <li className="flex items-start gap-3">
@@ -191,8 +194,8 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
-          <p>&copy; {currentYear} {siteConfig.name}. All rights reserved.</p>
-          <p>Structural Engineering &bull; Project Supervision &bull; Turnkey Civil Contracts</p>
+          <p>&copy; {currentYear} {siteConfig.name}, Dindigul, Tamil Nadu. All rights reserved.</p>
+          <p>Licensed Civil Engineers &bull; Turnkey Civil Contracts &bull; IS 456 / IS 1893 Standards</p>
         </div>
       </div>
     </footer>

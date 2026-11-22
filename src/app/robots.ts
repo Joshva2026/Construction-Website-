@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://civilengineeringworks.in/sitemap.xml",
+    sitemap: "https://joshvaconstruction.com/sitemap.xml",
   };
 }

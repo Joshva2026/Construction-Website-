@@ -13,45 +13,46 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://civilengineeringworks.in"), // Base deployment URL
+  metadataBase: new URL("https://joshvaconstruction.com"),
   title: {
-    default: `${siteConfig.name} | Structural Engineering & Construction`,
+    default: `${siteConfig.name} | Structural Engineering & Construction - Dindigul, Tamil Nadu`,
     template: `%s | ${siteConfig.name}`,
   },
-  description: siteConfig.description,
+  description: `${siteConfig.name} - Turnkey Civil Construction, Structural Planning, and Building Contractors based in Dindigul, Tamil Nadu. Directed by ${siteConfig.engineerName}. 126+ Delivered Projects.`,
   keywords: [
-    "Civil Engineering",
-    "Construction Company",
-    "Structural Design",
-    "Site Supervision",
-    "Turnkey Construction",
-    "RCC Earthquake Resistant Design",
-    "Residential Builder",
-    "Commercial Contractor",
+    "Joshva Construction",
+    "Construction company in Dindigul",
+    "Civil engineer Dindigul",
+    "Builders in Dindigul",
+    "Tamil Nadu construction company",
+    "Turnkey construction contractor",
+    "Duplex house construction Dindigul",
+    "Structural design Tamil Nadu",
+    "Commercial building contractors Dindigul",
   ],
   authors: [{ name: siteConfig.engineerName }],
   creator: siteConfig.name,
   openGraph: {
     type: "website",
     locale: "en_IN",
-    url: "https://civilengineeringworks.in",
+    url: "https://joshvaconstruction.com",
     siteName: siteConfig.name,
-    title: `${siteConfig.name} | Modern Construction & Structural Engineering`,
+    title: `${siteConfig.name} | Dindigul, Tamil Nadu`,
     description: siteConfig.description,
     images: [
       {
-        url: "https://images.unsplash.com/photo-1541888946425-d81bb19940f2?w=1200&q=80",
+        url: "https://images.unsplash.com/photo-1541888946425-d81bb19940f2?w=1200&auto=format&fit=crop&q=80",
         width: 1200,
         height: 630,
-        alt: `${siteConfig.name} - Construction and Structural Engineering`,
+        alt: `${siteConfig.name} - Construction in Dindigul, Tamil Nadu`,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${siteConfig.name} | Structural Engineering & Construction`,
+    title: `${siteConfig.name} | Dindigul, Tamil Nadu`,
     description: siteConfig.description,
-    images: ["https://images.unsplash.com/photo-1541888946425-d81bb19940f2?w=1200&q=80"],
+    images: ["https://images.unsplash.com/photo-1541888946425-d81bb19940f2?w=1200&auto=format&fit=crop&q=80"],
   },
   robots: {
     index: true,

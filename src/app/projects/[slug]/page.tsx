@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getProjectBySlug, getAllProjectSlugs, projects } from "@/data/projects";
+import { getProjectBySlug, getAllProjectSlugs } from "@/data/projects";
 import { siteConfig } from "@/data/site";
 import CallToAction from "@/components/CallToAction";
 
@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: ProjectDetailPageProps): Prom
   }
 
   return {
-    title: `${project.title} - ${project.category} Construction`,
+    title: `${project.title} | ${siteConfig.name} - ${project.location}`,
     description: project.summary,
     openGraph: {
       title: `${project.title} | ${siteConfig.name}`,
@@ -66,7 +66,7 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
         </nav>
 
         {/* Hero Section of the Project */}
-        <div className="relative aspect-[16/9] md:aspect-[21/9] w-full rounded-2xl overflow-hidden shadow-xl bg-brand-ink mb-12 border border-slate-800">
+        <div className="relative aspect-[16/9] md:aspect-[21/9] w-full rounded-2xl overflow-hidden shadow-2xl bg-brand-ink mb-12 border border-slate-800">
           <Image
             src={project.cover}
             alt={project.title}
@@ -78,10 +78,12 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
           <div className="absolute inset-0 bg-gradient-to-t from-brand-ink via-brand-ink/40 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10 lg:p-12 text-white">
             <div className="flex flex-wrap items-center gap-3 mb-3">
-              <span className="px-3 py-1 bg-brand-primary text-brand-ink font-bold text-xs uppercase tracking-wider rounded">
+              <span className="px-3.5 py-1 bg-brand-primary text-brand-ink font-bold text-xs uppercase tracking-wider rounded-md shadow">
                 {project.category}
               </span>
-              <span className="text-xs text-slate-300 font-medium">Completed in {project.year}</span>
+              <span className="text-xs text-slate-300 font-medium bg-black/40 px-2.5 py-1 rounded backdrop-blur-sm">
+                Completed in {project.year}
+              </span>
             </div>
             <h1 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold uppercase tracking-tight text-white leading-tight">
               {project.title}
@@ -100,10 +102,10 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
         </div>
 
         {/* Project Key Metrics Strip */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-6 bg-white rounded-xl border border-brand-line shadow-sm mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-6 bg-white rounded-2xl border border-brand-line shadow-sm mb-12">
           <div>
             <span className="block text-xs uppercase font-bold tracking-wider text-slate-400">
-              Location
+              Site Location
             </span>
             <span className="text-sm sm:text-base font-bold text-slate-900 mt-1 block">
               {project.location}
@@ -119,7 +121,7 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
           </div>
           <div>
             <span className="block text-xs uppercase font-bold tracking-wider text-slate-400">
-              Execution Duration
+              Contract Duration
             </span>
             <span className="text-sm sm:text-base font-bold text-slate-900 mt-1 block">
               {project.duration}
@@ -139,7 +141,7 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mb-16">
           {/* Main Description & Scope */}
           <div className="lg:col-span-2 space-y-8">
-            <section className="bg-white p-8 rounded-xl border border-brand-line shadow-sm">
+            <section className="bg-white p-8 rounded-2xl border border-brand-line shadow-sm">
               <h2 className="text-xl font-bold uppercase tracking-tight text-slate-900 mb-4">
                 Project Overview & Summary
               </h2>
@@ -148,7 +150,7 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
               </p>
             </section>
 
-            <section className="bg-white p-8 rounded-xl border border-brand-line shadow-sm">
+            <section className="bg-white p-8 rounded-2xl border border-brand-line shadow-sm">
               <h2 className="text-xl font-bold uppercase tracking-tight text-slate-900 mb-4">
                 Engineering Scope of Work
               </h2>
@@ -164,7 +166,7 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
               </ul>
             </section>
 
-            <section className="bg-emerald-50/70 border border-emerald-200 p-8 rounded-xl shadow-sm">
+            <section className="bg-emerald-50/70 border border-emerald-200 p-8 rounded-2xl shadow-sm">
               <h2 className="text-xl font-bold uppercase tracking-tight text-emerald-950 mb-3">
                 Project Outcome & Deliverables
               </h2>
@@ -176,38 +178,39 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
 
           {/* Sidebar CTA Card */}
           <div className="space-y-6">
-            <div className="bg-brand-ink text-white p-8 rounded-xl shadow-md border border-slate-800">
+            <div className="bg-brand-ink text-white p-8 rounded-2xl shadow-xl border border-slate-800">
               <span className="text-xs font-bold uppercase tracking-widest text-brand-primary">
-                Inquire About Similar Work
+                Inquire With Lead Engineer
               </span>
               <h3 className="mt-2 text-2xl font-bold uppercase tracking-tight text-white leading-tight">
-                Planning A Similar Project?
+                Planning Similar Work in Tamil Nadu?
               </h3>
               <p className="mt-3 text-sm text-slate-300 leading-relaxed">
-                Connect with our senior civil engineering team to review site feasibility, soil
-                parameters, and turnkey quotation.
+                Connect directly with {siteConfig.engineerName} to assess soil feasibility, structural
+                drawings, and fixed turnkey pricing.
               </p>
 
               <div className="mt-6 space-y-3">
                 <Link
                   href="/contact"
-                  className="w-full inline-flex items-center justify-center px-5 py-3 rounded-lg text-sm font-bold bg-brand-primary text-brand-ink hover:bg-brand-primary-hover transition-colors shadow"
+                  className="w-full inline-flex items-center justify-center px-5 py-3.5 rounded-xl text-sm font-bold bg-brand-primary text-brand-ink hover:bg-brand-primary-hover transition-colors shadow-lg"
                 >
                   Request a Free Quote
                 </Link>
                 <a
                   href={`https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(
-                    `Hello ${siteConfig.name}, I am interested in building a project similar to "${project.title}".`
+                    `Hello ${siteConfig.name}, I am interested in building a project similar to "${project.title}" in ${project.location}.`
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full inline-flex items-center justify-center px-5 py-3 rounded-lg text-sm font-semibold border border-white/20 text-white hover:bg-white/10 transition-colors"
+                  className="w-full inline-flex items-center justify-center px-5 py-3.5 rounded-xl text-sm font-semibold border border-white/20 text-white hover:bg-white/10 transition-colors"
                 >
                   Enquire via WhatsApp
                 </a>
               </div>
 
               <div className="mt-8 pt-6 border-t border-slate-800 text-xs text-slate-400 space-y-2">
+                <p><strong>Office:</strong> {siteConfig.address}</p>
                 <p><strong>Phone:</strong> {siteConfig.phone}</p>
                 <p><strong>Email:</strong> {siteConfig.email}</p>
               </div>
@@ -219,17 +222,17 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
         {project.gallery && project.gallery.length > 0 && (
           <section className="mt-16" aria-label="Project Gallery">
             <h2 className="text-2xl font-bold uppercase tracking-tight text-slate-900 mb-6">
-              Construction & Progress Gallery
+              Construction Progress & Site Gallery
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {project.gallery.map((imgUrl, idx) => (
                 <div
                   key={idx}
-                  className="relative aspect-[4/3] rounded-xl overflow-hidden bg-slate-200 border border-brand-line shadow-sm group"
+                  className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-slate-900 border border-brand-line shadow-md group"
                 >
                   <Image
                     src={imgUrl}
-                    alt={`${project.title} gallery photo ${idx + 1}`}
+                    alt={`${project.title} site photo ${idx + 1}`}
                     fill
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     className="object-cover group-hover:scale-105 transition-transform duration-500"

@@ -4,9 +4,9 @@ import SectionHeading from "@/components/SectionHeading";
 import { siteConfig } from "@/data/site";
 
 export const metadata: Metadata = {
-  title: "Contact & Free Quote",
+  title: "Contact & Free Quote | Dindigul, Tamil Nadu",
   description:
-    "Request a free structural or construction quote. Connect with Er. Arjun Sharma via WhatsApp or email for turnkey projects, site supervision, and architectural planning.",
+    "Request a free structural or construction quote from Joshva Construction in Dindigul, Tamil Nadu. Connect with Er. M. Joshva Priyan via WhatsApp or email for turnkey villas, site supervision, and architectural planning.",
 };
 
 export default function ContactPage() {
@@ -15,8 +15,8 @@ export default function ContactPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeading
           eyebrow="Get In Touch"
-          title="Discuss Your Construction Project"
-          description="Submit your plot requirements, blueprints, or structural queries below. We validate your submission and generate an instant message for WhatsApp or direct email."
+          title="Discuss Your Construction Project in Tamil Nadu"
+          description="Submit your plot requirements, site dimensions, or structural drawings below. Our system prepares an instant message ready for WhatsApp or direct email to Er. M. Joshva Priyan."
           align="left"
         />
 
@@ -28,15 +28,17 @@ export default function ContactPage() {
 
           {/* Contact Details & Company Info Aside */}
           <aside className="lg:col-span-5 space-y-8">
-            <div className="bg-brand-ink text-white rounded-2xl p-6 sm:p-8 border border-slate-800 shadow-md">
+            <div className="bg-brand-ink text-white rounded-2xl p-6 sm:p-8 border border-slate-800 shadow-xl">
               <div className="border-b border-slate-800 pb-6 mb-6">
                 <span className="text-xs font-bold uppercase tracking-widest text-brand-primary">
-                  Direct Contact
+                  Head Office &bull; Dindigul
                 </span>
                 <h3 className="mt-1 text-2xl font-bold uppercase tracking-tight text-white">
                   {siteConfig.engineerName}
                 </h3>
-                <p className="text-xs text-slate-400 mt-1">Lead Structural & Civil Engineer</p>
+                <p className="text-xs text-slate-400 mt-1">
+                  Chief Civil Engineer &bull; {siteConfig.name}
+                </p>
               </div>
 
               <ul className="space-y-4 text-sm text-slate-300">
@@ -52,7 +54,7 @@ export default function ContactPage() {
                     </svg>
                   </div>
                   <div>
-                    <span className="block text-xs uppercase font-bold text-slate-400">Phone</span>
+                    <span className="block text-xs uppercase font-bold text-slate-400">Direct Phone</span>
                     <a
                       href={`tel:${siteConfig.phone.replace(/\s+/g, "")}`}
                       className="text-white hover:text-brand-primary font-medium transition-colors"
@@ -74,7 +76,7 @@ export default function ContactPage() {
                     </svg>
                   </div>
                   <div>
-                    <span className="block text-xs uppercase font-bold text-slate-400">Email</span>
+                    <span className="block text-xs uppercase font-bold text-slate-400">Email Address</span>
                     <a
                       href={`mailto:${siteConfig.email}`}
                       className="text-white hover:text-brand-primary font-medium transition-colors"
@@ -102,7 +104,7 @@ export default function ContactPage() {
                     </svg>
                   </div>
                   <div>
-                    <span className="block text-xs uppercase font-bold text-slate-400">Head Office</span>
+                    <span className="block text-xs uppercase font-bold text-slate-400">Office Location</span>
                     <span className="text-white font-medium">{siteConfig.address}</span>
                   </div>
                 </li>
@@ -119,24 +121,24 @@ export default function ContactPage() {
                     </svg>
                   </div>
                   <div>
-                    <span className="block text-xs uppercase font-bold text-slate-400">Business Hours</span>
+                    <span className="block text-xs uppercase font-bold text-slate-400">Operating Hours</span>
                     <span className="text-white font-medium">{siteConfig.hours}</span>
                   </div>
                 </li>
               </ul>
             </div>
 
-            {/* Embedded Google Maps */}
+            {/* Embedded Google Maps Centered on Dindigul, Tamil Nadu */}
             <div className="bg-white rounded-2xl overflow-hidden border border-brand-line shadow-sm">
               <div className="p-4 border-b border-slate-100 flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                  Office Location Map
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-800">
+                  Office Map &bull; Dindigul, Tamil Nadu
                 </span>
-                <span className="text-xs text-slate-500">Civil Lines</span>
+                <span className="text-xs text-brand-primary font-bold">Palani Road Area</span>
               </div>
               <div className="w-full aspect-[4/3] bg-slate-100">
                 <iframe
-                  title="Office Location Map"
+                  title="Joshva Construction Office Location Map"
                   src={siteConfig.mapEmbedUrl}
                   width="100%"
                   height="100%"

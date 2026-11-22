@@ -2,7 +2,7 @@ import { MetadataRoute } from "next";
 import { getAllProjectSlugs } from "@/data/projects";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://civilengineeringworks.in";
+  const baseUrl = "https://joshvaconstruction.com";
   const now = new Date();
 
   const staticRoutes: MetadataRoute.Sitemap = [

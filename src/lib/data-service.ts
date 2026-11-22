@@ -1,12 +1,11 @@
 import fs from "fs/promises";
 import path from "path";
+import os from "os";
 import { siteConfig as defaultSiteConfig, SiteConfig, SiteService, SiteStat } from "@/data/site";
 import { projects as defaultProjects, Project } from "@/data/projects";
 
-const DATA_DIR = path.join(process.cwd(), "src", "data", "store");
-const SITE_CONFIG_FILE = path.join(DATA_DIR, "site-config.json");
-const PROJECTS_FILE = path.join(DATA_DIR, "projects.json");
-const ENQUIRIES_FILE = path.join(DATA_DIR, "enquiries.json");
+const BUNDLED_DATA_DIR = path.join(process.cwd(), "src", "data", "store");
+const TMP_DATA_DIR = path.join(os.tmpdir(), "joshva-store");
 
 export interface EnquiryRecord {
   id: string;
@@ -21,22 +20,60 @@ export interface EnquiryRecord {
   notes?: string;
 }
 
-async function ensureDir() {
-  await fs.mkdir(DATA_DIR, { recursive: true });
+// In-memory cache to guarantee instant reads and serverless survivability
+let memorySiteConfig: SiteConfig | null = null;
+let memoryProjects: Project[] | null = null;
+let memoryEnquiries: EnquiryRecord[] | null = null;
+
+async function safeReadFile<T>(filename: string, fallback: T): Promise<T> {
+  // 1. Try reading from writable /tmp first (if modified in serverless session)
+  try {
+    const tmpPath = path.join(TMP_DATA_DIR, filename);
+    const data = await fs.readFile(tmpPath, "utf-8");
+    return JSON.parse(data) as T;
+  } catch {
+    // ignore
+  }
+
+  // 2. Try reading from bundled static store
+  try {
+    const bundledPath = path.join(BUNDLED_DATA_DIR, filename);
+    const data = await fs.readFile(bundledPath, "utf-8");
+    return JSON.parse(data) as T;
+  } catch {
+    // ignore
+  }
+
+  // 3. Fallback to hardcoded default
+  return fallback;
+}
+
+async function safeWriteFile(filename: string, data: any): Promise<void> {
+  const jsonStr = JSON.stringify(data, null, 2);
+
+  // 1. Try writing to bundled store (works locally in dev and VPS)
+  try {
+    await fs.mkdir(BUNDLED_DATA_DIR, { recursive: true });
+    await fs.writeFile(path.join(BUNDLED_DATA_DIR, filename), jsonStr, "utf-8");
+  } catch {
+    // Read-only filesystem (expected on Vercel lambda /var/task)
+  }
+
+  // 2. Try writing to /tmp (always writable on Vercel / AWS Lambda)
+  try {
+    await fs.mkdir(TMP_DATA_DIR, { recursive: true });
+    await fs.writeFile(path.join(TMP_DATA_DIR, filename), jsonStr, "utf-8");
+  } catch {
+    // Ignore fallback
+  }
 }
 
 // ---------------- Site Config Operations ---------------- //
 
 export async function getSiteConfig(): Promise<SiteConfig> {
-  await ensureDir();
-  try {
-    const raw = await fs.readFile(SITE_CONFIG_FILE, "utf-8");
-    return JSON.parse(raw) as SiteConfig;
-  } catch {
-    // If not found, write default siteConfig and return it
-    await fs.writeFile(SITE_CONFIG_FILE, JSON.stringify(defaultSiteConfig, null, 2), "utf-8");
-    return defaultSiteConfig;
-  }
+  if (memorySiteConfig) return memorySiteConfig;
+  memorySiteConfig = await safeReadFile<SiteConfig>("site-config.json", defaultSiteConfig);
+  return memorySiteConfig;
 }
 
 export async function updateSiteConfig(newConfig: Partial<SiteConfig>): Promise<SiteConfig> {
@@ -49,23 +86,18 @@ export async function updateSiteConfig(newConfig: Partial<SiteConfig>): Promise<
       ...(newConfig.stats || {}),
     },
   };
-  await ensureDir();
-  await fs.writeFile(SITE_CONFIG_FILE, JSON.stringify(updated, null, 2), "utf-8");
+
+  memorySiteConfig = updated;
+  await safeWriteFile("site-config.json", updated);
   return updated;
 }
 
 // ---------------- Projects Operations ---------------- //
 
 export async function getProjects(): Promise<Project[]> {
-  await ensureDir();
-  try {
-    const raw = await fs.readFile(PROJECTS_FILE, "utf-8");
-    return JSON.parse(raw) as Project[];
-  } catch {
-    // If not found, write default projects and return them
-    await fs.writeFile(PROJECTS_FILE, JSON.stringify(defaultProjects, null, 2), "utf-8");
-    return defaultProjects;
-  }
+  if (memoryProjects) return memoryProjects;
+  memoryProjects = await safeReadFile<Project[]>("projects.json", defaultProjects);
+  return memoryProjects;
 }
 
 export async function getProjectBySlug(slug: string): Promise<Project | undefined> {
@@ -81,12 +113,11 @@ export async function saveProject(project: Project, originalSlug?: string): Prom
   if (index >= 0) {
     all[index] = project;
   } else {
-    // Add to beginning of array so newest appears first
     all.unshift(project);
   }
 
-  await ensureDir();
-  await fs.writeFile(PROJECTS_FILE, JSON.stringify(all, null, 2), "utf-8");
+  memoryProjects = all;
+  await safeWriteFile("projects.json", all);
   return project;
 }
 
@@ -96,8 +127,9 @@ export async function deleteProject(slug: string): Promise<boolean> {
   if (filtered.length === all.length) {
     return false;
   }
-  await ensureDir();
-  await fs.writeFile(PROJECTS_FILE, JSON.stringify(filtered, null, 2), "utf-8");
+
+  memoryProjects = filtered;
+  await safeWriteFile("projects.json", filtered);
   return true;
 }
 
@@ -124,40 +156,36 @@ export async function updateStats(stats: Record<string, SiteStat>): Promise<Reco
 
 // ---------------- Enquiries Operations ---------------- //
 
+const defaultInitialEnquiries: EnquiryRecord[] = [
+  {
+    id: "enq-sample-1",
+    name: "Ramanathan K.",
+    phone: "+91 94431 23456",
+    email: "ramanathan.dgl@gmail.com",
+    projectType: "Residential Villa (3BHK Duplex)",
+    preferredContact: "WhatsApp",
+    message: "We have a 2400 sq ft plot near Palani Road. Looking for complete turnkey RCC duplex construction with Vaastu compliance.",
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2).toISOString(),
+    status: "New",
+  },
+  {
+    id: "enq-sample-2",
+    name: "S. Murugesan",
+    phone: "+91 98422 78910",
+    email: "murugesan_builders@yahoo.com",
+    projectType: "Commercial Building",
+    preferredContact: "Phone Call",
+    message: "Need structural consultancy and drawing approval for a G+3 commercial shopping complex near Collectorate.",
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 5).toISOString(),
+    status: "Contacted",
+    notes: "Called client on Tuesday. Site inspection scheduled.",
+  },
+];
+
 export async function getEnquiries(): Promise<EnquiryRecord[]> {
-  await ensureDir();
-  try {
-    const raw = await fs.readFile(ENQUIRIES_FILE, "utf-8");
-    return JSON.parse(raw) as EnquiryRecord[];
-  } catch {
-    const initialEnquiries: EnquiryRecord[] = [
-      {
-        id: "enq-sample-1",
-        name: "Ramanathan K.",
-        phone: "+91 94431 23456",
-        email: "ramanathan.dgl@gmail.com",
-        projectType: "Residential Villa (3BHK Duplex)",
-        preferredContact: "WhatsApp",
-        message: "We have a 2400 sq ft plot near Palani Road. Looking for complete turnkey RCC duplex construction with Vaastu compliance.",
-        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2).toISOString(),
-        status: "New",
-      },
-      {
-        id: "enq-sample-2",
-        name: "S. Murugesan",
-        phone: "+91 98422 78910",
-        email: "murugesan_builders@yahoo.com",
-        projectType: "Commercial Building",
-        preferredContact: "Phone Call",
-        message: "Need structural consultancy and drawing approval for a G+3 commercial shopping complex near Collectorate.",
-        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 5).toISOString(),
-        status: "Contacted",
-        notes: "Called client on Tuesday. Site inspection scheduled.",
-      },
-    ];
-    await fs.writeFile(ENQUIRIES_FILE, JSON.stringify(initialEnquiries, null, 2), "utf-8");
-    return initialEnquiries;
-  }
+  if (memoryEnquiries) return memoryEnquiries;
+  memoryEnquiries = await safeReadFile<EnquiryRecord[]>("enquiries.json", defaultInitialEnquiries);
+  return memoryEnquiries;
 }
 
 export async function addEnquiry(enquiry: Omit<EnquiryRecord, "id" | "createdAt" | "status">): Promise<EnquiryRecord> {
@@ -169,8 +197,9 @@ export async function addEnquiry(enquiry: Omit<EnquiryRecord, "id" | "createdAt"
     status: "New",
   };
   all.unshift(record);
-  await ensureDir();
-  await fs.writeFile(ENQUIRIES_FILE, JSON.stringify(all, null, 2), "utf-8");
+
+  memoryEnquiries = all;
+  await safeWriteFile("enquiries.json", all);
   return record;
 }
 
@@ -188,8 +217,8 @@ export async function updateEnquiryStatus(
     item.notes = notes;
   }
 
-  await ensureDir();
-  await fs.writeFile(ENQUIRIES_FILE, JSON.stringify(all, null, 2), "utf-8");
+  memoryEnquiries = all;
+  await safeWriteFile("enquiries.json", all);
   return item;
 }
 
@@ -197,8 +226,9 @@ export async function deleteEnquiry(id: string): Promise<boolean> {
   const all = await getEnquiries();
   const filtered = all.filter((e) => e.id !== id);
   if (filtered.length === all.length) return false;
-  await ensureDir();
-  await fs.writeFile(ENQUIRIES_FILE, JSON.stringify(filtered, null, 2), "utf-8");
+
+  memoryEnquiries = filtered;
+  await safeWriteFile("enquiries.json", filtered);
   return true;
 }
 
@@ -223,20 +253,26 @@ export async function importAllData(payload: {
   projects?: Project[];
   enquiries?: EnquiryRecord[];
 }) {
-  await ensureDir();
   if (payload.siteConfig) {
-    await fs.writeFile(SITE_CONFIG_FILE, JSON.stringify(payload.siteConfig, null, 2), "utf-8");
+    memorySiteConfig = payload.siteConfig;
+    await safeWriteFile("site-config.json", payload.siteConfig);
   }
   if (payload.projects) {
-    await fs.writeFile(PROJECTS_FILE, JSON.stringify(payload.projects, null, 2), "utf-8");
+    memoryProjects = payload.projects;
+    await safeWriteFile("projects.json", payload.projects);
   }
   if (payload.enquiries) {
-    await fs.writeFile(ENQUIRIES_FILE, JSON.stringify(payload.enquiries, null, 2), "utf-8");
+    memoryEnquiries = payload.enquiries;
+    await safeWriteFile("enquiries.json", payload.enquiries);
   }
 }
 
 export async function resetToDefaults() {
-  await ensureDir();
-  await fs.writeFile(SITE_CONFIG_FILE, JSON.stringify(defaultSiteConfig, null, 2), "utf-8");
-  await fs.writeFile(PROJECTS_FILE, JSON.stringify(defaultProjects, null, 2), "utf-8");
+  memorySiteConfig = defaultSiteConfig;
+  memoryProjects = defaultProjects;
+  memoryEnquiries = defaultInitialEnquiries;
+
+  await safeWriteFile("site-config.json", defaultSiteConfig);
+  await safeWriteFile("projects.json", defaultProjects);
+  await safeWriteFile("enquiries.json", defaultInitialEnquiries);
 }

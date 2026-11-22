@@ -3,6 +3,8 @@ import fs from "fs/promises";
 import path from "path";
 import { verifySession, SESSION_COOKIE_NAME } from "@/lib/auth-service";
 
+export const dynamic = "force-dynamic";
+
 const UPLOADS_DIR = path.join(process.cwd(), "public", "uploads");
 const IMAGES_DIR = path.join(process.cwd(), "public", "images");
 
@@ -17,11 +19,9 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    await fs.mkdir(UPLOADS_DIR, { recursive: true });
-
     const files: Array<{ name: string; url: string; size: number; source: "uploads" | "images" }> = [];
 
-    // Scan public/uploads
+    // Scan public/uploads if exists
     try {
       const uploadFiles = await fs.readdir(UPLOADS_DIR);
       for (const file of uploadFiles) {
@@ -69,7 +69,6 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    await fs.mkdir(UPLOADS_DIR, { recursive: true });
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
 
@@ -80,24 +79,41 @@ export async function POST(req: NextRequest) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Sanitize filename
     const safeName = file.name
       .toLowerCase()
       .replace(/[^a-z0-9._-]/g, "-")
       .replace(/-+/g, "-");
     const uniqueName = `${Date.now()}-${safeName}`;
-    const filePath = path.join(UPLOADS_DIR, uniqueName);
 
-    await fs.writeFile(filePath, buffer);
+    // Try saving to disk if public/uploads is writable
+    try {
+      await fs.mkdir(UPLOADS_DIR, { recursive: true });
+      const filePath = path.join(UPLOADS_DIR, uniqueName);
+      await fs.writeFile(filePath, buffer);
 
-    const publicUrl = `/uploads/${uniqueName}`;
-    return NextResponse.json({
-      success: true,
-      url: publicUrl,
-      name: uniqueName,
-      size: buffer.length,
-    });
-  } catch {
-    return NextResponse.json({ error: "Failed to upload file" }, { status: 500 });
+      return NextResponse.json({
+        success: true,
+        url: `/uploads/${uniqueName}`,
+        name: uniqueName,
+        size: buffer.length,
+      });
+    } catch {
+      // Fallback for serverless environments (read-only filesystem on Vercel)
+      const mimeType = file.type || "image/jpeg";
+      const base64Data = buffer.toString("base64");
+      const dataUri = `data:${mimeType};base64,${base64Data}`;
+
+      return NextResponse.json({
+        success: true,
+        url: dataUri,
+        name: uniqueName,
+        size: buffer.length,
+      });
+    }
+  } catch (err: any) {
+    return NextResponse.json(
+      { error: "Failed to upload file: " + (err?.message || "Unknown error") },
+      { status: 500 }
+    );
   }
 }

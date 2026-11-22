@@ -165,8 +165,7 @@ export default function AdminSidebar({ mobileOpen, setMobileOpen }: AdminSidebar
 
   const handleLogout = async () => {
     await fetch("/api/admin/auth", { method: "DELETE" });
-    router.push("/admin/login");
-    router.refresh();
+    window.location.href = "/admin/login";
   };
 
   return (

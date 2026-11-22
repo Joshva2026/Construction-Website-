@@ -6,36 +6,48 @@ import {
   verifySession,
   updatePassword,
   SESSION_COOKIE_NAME,
-  ensureAuthInitialized,
+  getAdminCredentials,
 } from "@/lib/auth-service";
+
+export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   const cookie = request.cookies.get(SESSION_COOKIE_NAME);
   const isValid = await verifySession(cookie?.value);
-  const auth = await ensureAuthInitialized();
+  const creds = await getAdminCredentials();
 
   return NextResponse.json({
     authenticated: isValid,
-    username: isValid ? auth.username : null,
+    username: isValid ? creds.username : null,
   });
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { username, password } = body;
+    const body = await request.json().catch(() => ({}));
+    const username = body.username ? String(body.username).trim() : "";
+    const password = body.password ? String(body.password) : "";
 
     if (!username || !password) {
-      return NextResponse.json({ error: "Username and password required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Username and password are required" },
+        { status: 400 }
+      );
     }
 
     const isValid = await verifyCredentials(username, password);
     if (!isValid) {
-      return NextResponse.json({ error: "Invalid username or password" }, { status: 401 });
+      return NextResponse.json(
+        { error: "Invalid username or password" },
+        { status: 401 }
+      );
     }
 
-    const session = await createSession();
-    const response = NextResponse.json({ success: true, message: "Logged in successfully" });
+    const session = await createSession(username);
+    const response = NextResponse.json({
+      success: true,
+      message: "Logged in successfully",
+    });
 
     response.cookies.set({
       name: SESSION_COOKIE_NAME,
@@ -48,8 +60,12 @@ export async function POST(request: NextRequest) {
     });
 
     return response;
-  } catch {
-    return NextResponse.json({ error: "Failed to process login" }, { status: 500 });
+  } catch (err: any) {
+    console.error("Login route error:", err);
+    return NextResponse.json(
+      { error: "Failed to process login: " + (err?.message || "Unknown error") },
+      { status: 500 }
+    );
   }
 }
 
@@ -72,20 +88,26 @@ export async function PATCH(request: NextRequest) {
     const body = await request.json();
     const { currentPassword, newPassword, newUsername } = body;
 
-    const auth = await ensureAuthInitialized();
-    const isCurrentValid = await verifyCredentials(auth.username, currentPassword);
+    const creds = await getAdminCredentials();
+    const isCurrentValid = await verifyCredentials(creds.username, currentPassword);
 
     if (!isCurrentValid) {
       return NextResponse.json({ error: "Current password is incorrect" }, { status: 400 });
     }
 
     if (!newPassword || newPassword.length < 6) {
-      return NextResponse.json({ error: "New password must be at least 6 characters" }, { status: 400 });
+      return NextResponse.json(
+        { error: "New password must be at least 6 characters" },
+        { status: 400 }
+      );
     }
 
     await updatePassword(newPassword, newUsername);
     return NextResponse.json({ success: true, message: "Credentials updated successfully" });
-  } catch {
-    return NextResponse.json({ error: "Failed to update password" }, { status: 500 });
+  } catch (err: any) {
+    return NextResponse.json(
+      { error: "Failed to update password: " + (err?.message || "Unknown error") },
+      { status: 500 }
+    );
   }
 }

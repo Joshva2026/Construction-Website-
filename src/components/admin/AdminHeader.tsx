@@ -14,8 +14,7 @@ export default function AdminHeader({ setMobileOpen, title, subtitle }: AdminHea
 
   const handleLogout = async () => {
     await fetch("/api/admin/auth", { method: "DELETE" });
-    router.push("/admin/login");
-    router.refresh();
+    window.location.href = "/admin/login";
   };
 
   return (

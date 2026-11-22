@@ -87,33 +87,37 @@
   function renderSettings() {
     const s = store.settings;
     document.title = s.brandName;
+    const set = (id, html) => { const el = $(`#${id}`); if (el) el.textContent = html; };
+    const setHtml = (id, html) => { const el = $(`#${id}`); if (el) el.innerHTML = html; };
+    const setAttr = (id, attr, val) => { const el = $(`#${id}`); if (el) el[attr] = val; };
+
     const brandEl = $("#brandName");
     if (brandEl) brandEl.innerHTML = s.brandName.replace("Civil Engineering", "Civil Engineering<span>Works</span>");
-    $("#engineerName").textContent = s.engineerName;
-    $("#heroTitle").textContent = s.heroTitle;
-    $("#heroTagline").textContent = s.heroTagline;
-    $("#footerNote").textContent = s.footerNote;
-    $("#footerBrand").textContent = s.brandName;
-    $("#footerBrandCopy").textContent = s.brandName;
-    $("#year").textContent = new Date().getFullYear();
+    set("engineerName", s.engineerName);
+    set("heroTitle", s.heroTitle);
+    set("heroTagline", s.heroTagline);
+    set("footerNote", s.footerNote);
+    set("footerBrand", s.brandName);
+    set("footerBrandCopy", s.brandName);
+    set("year", new Date().getFullYear());
     const phoneLink = s.phone.replace(/\s/g, "");
-    $("#contactInfo").innerHTML = `
+    setHtml("contactInfo", `
       <h3>Contact</h3>
       <p><strong>${esc(s.engineerName)}</strong></p>
       <p>Phone: <a href="tel:${esc(phoneLink)}">${esc(s.phone)}</a></p>
       <p>Email: <a href="mailto:${esc(s.email)}">${esc(s.email)}</a></p>
       ${s.whatsapp ? `<p>WhatsApp: <a href="https://wa.me/${esc(s.whatsapp.replace(/\D/g, ""))}" target="_blank" rel="noopener">Chat now</a></p>` : ""}
-      <p>Address: ${esc(s.address)}</p>`;
-    $("#contactName").textContent = esc(s.engineerName);
-    $("#contactPhone").href = `tel:${esc(phoneLink)}`;
-    $("#contactPhone").textContent = esc(s.phone);
-    $("#contactEmail").href = `mailto:${esc(s.email)}`;
-    $("#contactEmail").textContent = esc(s.email);
+      <p>Address: ${esc(s.address)}</p>`);
+    set("contactName", esc(s.engineerName));
+    setAttr("contactPhone", "href", `tel:${esc(phoneLink)}`);
+    set("contactPhone", esc(s.phone));
+    setAttr("contactEmail", "href", `mailto:${esc(s.email)}`);
+    set("contactEmail", esc(s.email));
     const wpEl = $("#contactWhatsApp");
     if (wpEl) wpEl.innerHTML = s.whatsapp
       ? `<p>WhatsApp: <a href="https://wa.me/${esc(s.whatsapp.replace(/\D/g, ""))}" target="_blank" rel="noopener">Chat now</a></p>`
       : "";
-    $("#contactAddress").textContent = esc(s.address);
+    set("contactAddress", esc(s.address));
   }
 
   function imageBlock(item, fallbackLabel) {

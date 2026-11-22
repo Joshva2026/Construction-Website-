@@ -9,11 +9,16 @@ import { ToastProvider } from "@/components/admin/Toast";
 export default function AdminLayoutClient({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [authenticated, setAuthenticated] = useState(false);
 
   const isLoginPage = pathname === "/admin/login";
+
+  // Automatically close sidebar on route changes
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     let isMounted = true;
@@ -59,8 +64,8 @@ export default function AdminLayoutClient({ children }: { children: React.ReactN
   if (checkingAuth) {
     return (
       <div className="min-h-screen bg-brand-ink flex flex-col items-center justify-center text-white">
-        <div className="w-12 h-12 border-4 border-brand-primary border-t-transparent rounded-full animate-spin mb-4" />
-        <p className="text-sm font-bold tracking-wider uppercase text-slate-300">
+        <div className="w-10 h-10 border-4 border-brand-primary border-t-transparent rounded-full animate-spin mb-4" />
+        <p className="text-xs font-bold tracking-wider uppercase text-slate-300">
           Loading Admin Portal...
         </p>
       </div>
@@ -90,12 +95,19 @@ export default function AdminLayoutClient({ children }: { children: React.ReactN
 
   return (
     <ToastProvider>
-      <div className="min-h-screen bg-slate-100 flex flex-col">
-        <AdminSidebar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
+      <div className="min-h-screen bg-slate-100 flex flex-col w-full text-slate-800">
+        {/* Toggleable Drawer Sidebar */}
+        <AdminSidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
 
-        <div className="lg:pl-72 flex flex-col flex-1">
-          <AdminHeader setMobileOpen={setMobileOpen} title={title} subtitle={subtitle} />
-          <main className="flex-1 p-4 sm:p-8 max-w-7xl w-full mx-auto">{children}</main>
+        {/* Full-width Main Viewport */}
+        <div className="flex flex-col flex-1 w-full min-w-0">
+          <AdminHeader
+            sidebarOpen={sidebarOpen}
+            setSidebarOpen={setSidebarOpen}
+            title={title}
+            subtitle={subtitle}
+          />
+          <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">{children}</main>
         </div>
       </div>
     </ToastProvider>

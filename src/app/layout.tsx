@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import WhatsAppButton from "@/components/WhatsAppButton";
+import SiteShell from "@/components/SiteShell";
 import { siteConfig } from "@/data/site";
 import { getSiteConfig } from "@/lib/data-service";
 
@@ -79,15 +77,7 @@ export default async function RootLayout({
           Skip to main content
         </a>
 
-        <Navbar siteConfig={liveConfig} />
-
-        <main id="main-content" className="flex-1">
-          {children}
-        </main>
-
-        <Footer siteConfig={liveConfig} />
-
-        <WhatsAppButton siteConfig={liveConfig} />
+        <SiteShell siteConfig={liveConfig}>{children}</SiteShell>
       </body>
     </html>
   );

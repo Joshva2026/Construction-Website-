@@ -4,13 +4,13 @@ export default function ProcessSteps() {
   const steps = [
     {
       step: "01",
-      title: "Consultation",
-      subtitle: "Site & Requirement Analysis",
+      title: "Consultation & Soil Test",
+      subtitle: "Site Survey & Requirements",
       description:
-        "We assess your plot conditions, discuss spatial needs, conduct soil feasibility review, and define project budget and timelines.",
+        "Comprehensive site inspection across Dindigul, black cotton soil bearing capacity analysis, architectural requirements mapping, and transparent budget estimation.",
       icon: (
         <svg
-          className="w-6 h-6"
+          className="w-6 h-6 text-amber-500"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -27,13 +27,13 @@ export default function ProcessSteps() {
     },
     {
       step: "02",
-      title: "Design & Planning",
-      subtitle: "Architectural & Structural Layouts",
+      title: "Design & Approvals",
+      subtitle: "2D/3D & Structural Drawings",
       description:
-        "Detailed CAD drawings, seismic IS compliant structural analysis, foundation detailing, municipal permit clearance, and itemized bill of quantities.",
+        "Seismic Zone III compliant structural design, municipal DTCP / LPA building plan approvals, Fe550D steel bar bending schedule, and itemized bill of quantities.",
       icon: (
         <svg
-          className="w-6 h-6"
+          className="w-6 h-6 text-amber-500"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -50,13 +50,13 @@ export default function ProcessSteps() {
     },
     {
       step: "03",
-      title: "Construction",
-      subtitle: "Supervised Execution",
+      title: "Supervised Execution",
+      subtitle: "Material Testing & RCC Casting",
       description:
-        "Groundbreaking, foundation piling, RCC slab casting, masonry, and service installation with daily supervisor quality logs and testing.",
+        "Turnkey execution using certified 53-grade cement, machine cube slump testing, supervised RCC slab casting, red brick masonry, and plumbing/electrical conduits.",
       icon: (
         <svg
-          className="w-6 h-6"
+          className="w-6 h-6 text-amber-500"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -73,13 +73,13 @@ export default function ProcessSteps() {
     },
     {
       step: "04",
-      title: "Handover",
-      subtitle: "Quality Audit & Commissioning",
+      title: "Quality Audit & Handover",
+      subtitle: "Certification & Key Handover",
       description:
-        "Joint walkthrough audit, MEP testing, snag clearance, as-built documentation, structural stability certificate, and final key handover.",
+        "Comprehensive snag list clearance, electrical/plumbing testing, structural stability engineer certificate, and ceremonial handover on or before agreed deadline.",
       icon: (
         <svg
-          className="w-6 h-6"
+          className="w-6 h-6 text-amber-500"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -97,12 +97,12 @@ export default function ProcessSteps() {
   ];
 
   return (
-    <section className="py-16 sm:py-24 bg-white border-t border-slate-200">
+    <section className="py-20 sm:py-28 bg-white border-y border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeading
-          eyebrow="Our Process"
-          title="A Structured Path To Structural Excellence"
-          description="Every project follows a proven, transparent four-stage methodology to ensure cost predictability, zero safety compromises, and on-time completion."
+          eyebrow="Our Engineering Workflow"
+          title="A Disciplined Path To Turnkey Completion"
+          description="Every residential villa, commercial building, and structural project in Tamil Nadu follows our 4-stage quality protocol ensuring zero cost overruns and 100% safety."
           align="center"
         />
 
@@ -110,23 +110,23 @@ export default function ProcessSteps() {
           {steps.map((step, idx) => (
             <div
               key={step.step}
-              className="relative flex flex-col items-start p-6 rounded-xl bg-brand-paper border border-brand-line shadow-sm hover:shadow-md transition-shadow duration-300"
+              className="relative flex flex-col items-start p-7 rounded-2xl bg-slate-50 border border-slate-200 shadow-sm hover:shadow-xl hover:border-amber-500/50 transition-all duration-300 group"
             >
               {/* Step indicator header */}
               <div className="flex items-center justify-between w-full mb-6">
-                <span className="w-12 h-12 rounded-lg bg-brand-primary/15 text-brand-ink flex items-center justify-center font-bold text-lg">
+                <span className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center font-bold text-lg group-hover:scale-110 transition-transform">
                   {step.icon}
                 </span>
-                <span className="text-3xl font-black text-slate-300 font-mono">
+                <span className="text-3xl font-black text-slate-300 font-mono group-hover:text-amber-500 transition-colors">
                   {step.step}
                 </span>
               </div>
 
               {/* Step Content */}
-              <h3 className="text-xl font-bold uppercase tracking-tight text-slate-900">
+              <h3 className="text-xl font-bold uppercase tracking-tight text-slate-900 group-hover:text-amber-600 transition-colors">
                 {step.title}
               </h3>
-              <p className="text-xs font-semibold uppercase tracking-wider text-brand-primary mt-1">
+              <p className="text-xs font-bold uppercase tracking-wider text-amber-600 mt-1">
                 {step.subtitle}
               </p>
               <p className="mt-3 text-sm text-slate-600 leading-relaxed">
@@ -135,7 +135,7 @@ export default function ProcessSteps() {
 
               {idx < steps.length - 1 && (
                 <div
-                  className="hidden lg:block absolute -right-4 top-1/2 -translate-y-1/2 z-10 text-brand-line"
+                  className="hidden lg:block absolute -right-4 top-1/2 -translate-y-1/2 z-10 text-slate-300"
                   aria-hidden="true"
                 >
                   <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">

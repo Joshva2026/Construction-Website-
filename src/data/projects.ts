@@ -28,17 +28,16 @@ export const projects: Project[] = [
       "Exclusive gated community of premium independent 3BHK & 4BHK duplex villas with earthquake-resistant RCC frames, private gardens, and solar power integration.",
     scope: [
       "Geotechnical soil investigation & foundation design",
-      "RCC framed structure with Fe550D TMT reinforcement",
+      "RCC framed structure with Fe550D TMT steel reinforcement",
       "Vaastu-compliant architectural planning & elevation",
       "Underground drainage & rainwater harvesting recharge wells",
     ],
     outcome:
       "Currently 75% complete with structural framework fully certified under IS 456 & IS 1893 seismic codes.",
-    cover: "https://images.unsplash.com/photo-1600596542815-e2ad9e56782f?w=1200&auto=format&fit=crop&q=80",
+    cover: "/images/indian-contemporary-villa.jpg",
     gallery: [
-      "https://images.unsplash.com/photo-1600596542815-e2ad9e56782f?w=1200&auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&auto=format&fit=crop&q=80",
+      "/images/indian-contemporary-villa.jpg",
+      "/images/indian-rcc-site.jpg",
     ],
   },
   {
@@ -59,11 +58,10 @@ export const projects: Project[] = [
     ],
     outcome:
       "Basement parking and superstructure successfully completed; facade installation progressing ahead of schedule.",
-    cover: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&auto=format&fit=crop&q=80",
+    cover: "/images/indian-commercial-complex.jpg",
     gallery: [
-      "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1200&auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&auto=format&fit=crop&q=80",
+      "/images/indian-commercial-complex.jpg",
+      "/images/indian-rcc-site.jpg",
     ],
   },
   {
@@ -84,10 +82,10 @@ export const projects: Project[] = [
     ],
     outcome:
       "Fully restored structural stability certified for 30+ additional service years with modern commercial street appeal.",
-    cover: "https://images.unsplash.com/photo-1541888946425-d81bb19940f2?w=1200&auto=format&fit=crop&q=80",
+    cover: "/images/indian-elevation-renovation.jpg",
     gallery: [
-      "https://images.unsplash.com/photo-1541888946425-d81bb19940f2?w=1200&auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1581589127319-27996835facc?w=1200&auto=format&fit=crop&q=80",
+      "/images/indian-elevation-renovation.jpg",
+      "/images/indian-contemporary-villa.jpg",
     ],
   },
   {
@@ -108,10 +106,10 @@ export const projects: Project[] = [
     ],
     outcome:
       "Delivered 3 weeks ahead of scheduled timeline with 100% occupancy on opening day.",
-    cover: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&auto=format&fit=crop&q=80",
+    cover: "/images/indian-rcc-site.jpg",
     gallery: [
-      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1200&auto=format&fit=crop&q=80",
+      "/images/indian-rcc-site.jpg",
+      "/images/indian-contemporary-villa.jpg",
     ],
   },
   {
@@ -132,10 +130,10 @@ export const projects: Project[] = [
     ],
     outcome:
       "Completed with zero lost-time injuries, operating at peak cargo capacity.",
-    cover: "https://images.unsplash.com/photo-1581589127319-27996835facc?w=1200&auto=format&fit=crop&q=80",
+    cover: "/images/indian-commercial-complex.jpg",
     gallery: [
-      "https://images.unsplash.com/photo-1581589127319-27996835facc?w=1200&auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&auto=format&fit=crop&q=80",
+      "/images/indian-commercial-complex.jpg",
+      "/images/indian-rcc-site.jpg",
     ],
   },
   {
@@ -156,10 +154,10 @@ export const projects: Project[] = [
     ],
     outcome:
       "Won local regional architectural recognition for low embodied carbon and natural thermal comfort.",
-    cover: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80",
+    cover: "/images/indian-contemporary-villa.jpg",
     gallery: [
-      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1600596542815-e2ad9e56782f?w=1200&auto=format&fit=crop&q=80",
+      "/images/indian-contemporary-villa.jpg",
+      "/images/indian-elevation-renovation.jpg",
     ],
   },
 ];

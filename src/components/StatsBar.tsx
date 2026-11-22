@@ -8,7 +8,7 @@ export default function StatsBar() {
     {
       ...siteConfig.stats.projectsCompleted,
       icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -21,7 +21,7 @@ export default function StatsBar() {
     {
       ...siteConfig.stats.yearsExperience,
       icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -34,7 +34,7 @@ export default function StatsBar() {
     {
       ...siteConfig.stats.satisfiedClients,
       icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -47,7 +47,7 @@ export default function StatsBar() {
     {
       ...siteConfig.stats.onTimeDelivery,
       icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -61,11 +61,11 @@ export default function StatsBar() {
 
   return (
     <section
-      aria-label="Key construction track record"
+      aria-label="Verified Construction Track Record"
       className="relative z-20 -mt-10 sm:-mt-14 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
     >
-      <div className="bg-gradient-to-r from-brand-ink via-brand-ink-2 to-brand-ink text-white rounded-2xl p-6 sm:p-10 shadow-2xl border border-white/10 backdrop-blur-xl">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 divide-y sm:divide-y-0 sm:divide-x divide-white/10">
+      <div className="bg-slate-900 text-white rounded-2xl p-6 sm:p-10 shadow-2xl border-2 border-amber-500/30 backdrop-blur-xl">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 divide-y sm:divide-y-0 sm:divide-x divide-slate-800">
           {statsList.map((stat, idx) => (
             <div
               key={stat.label}
@@ -74,8 +74,8 @@ export default function StatsBar() {
               }`}
             >
               {/* Stat Icon & Label */}
-              <div className="flex items-center gap-2 text-brand-primary mb-2">
-                <span className="p-1.5 rounded-md bg-brand-primary/10 text-brand-primary border border-brand-primary/20">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="p-1.5 rounded-lg bg-amber-500/10 border border-amber-500/30">
                   {stat.icon}
                 </span>
                 <span className="text-xs font-bold uppercase tracking-wider text-slate-300">
@@ -84,12 +84,12 @@ export default function StatsBar() {
               </div>
 
               {/* Dynamic Animated CountUp */}
-              <div className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white font-sans flex items-baseline">
+              <div className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight font-sans flex items-baseline">
                 <CountUp
                   end={stat.endValue}
-                  duration={2200}
+                  duration={2400}
                   suffix={stat.suffix}
-                  className="text-brand-primary drop-shadow-[0_2px_10px_rgba(242,169,0,0.3)]"
+                  className="text-amber-400 drop-shadow-[0_2px_8px_rgba(245,158,11,0.3)]"
                 />
               </div>
 

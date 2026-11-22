@@ -10,11 +10,11 @@
   }
 
   body {
-    @apply bg-brand-paper text-slate-800 selection:bg-brand-primary selection:text-brand-ink;
+    @apply bg-slate-50 text-slate-800 selection:bg-amber-500 selection:text-slate-950;
   }
 
-  /* Consistent accessible focus outline */
+  /* High-visibility construction focus outline */
   :focus-visible {
-    @apply outline-none ring-2 ring-brand-primary ring-offset-2;
+    @apply outline-none ring-2 ring-amber-500 ring-offset-2 ring-offset-slate-900;
   }
 }

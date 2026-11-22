@@ -24,17 +24,17 @@ export default function SectionHeading({
     >
       {eyebrow && (
         <div
-          className={`inline-flex items-center gap-2 text-xs sm:text-sm font-bold uppercase tracking-widest text-brand-primary mb-3 ${
+          className={`inline-flex items-center gap-2 text-xs sm:text-sm font-extrabold uppercase tracking-widest text-amber-500 mb-3 ${
             isCenter ? "justify-center" : ""
           }`}
         >
-          <span className="w-5 h-0.5 bg-brand-primary rounded-full inline-block" />
+          <span className="w-6 h-1 bg-amber-500 rounded-full inline-block" />
           <span>{eyebrow}</span>
-          {isCenter && <span className="w-5 h-0.5 bg-brand-primary rounded-full inline-block" />}
+          {isCenter && <span className="w-6 h-1 bg-amber-500 rounded-full inline-block" />}
         </div>
       )}
       <h2
-        className={`text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight uppercase leading-tight ${
+        className={`text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight uppercase leading-tight ${
           isDark ? "text-white" : "text-slate-900"
         }`}
       >

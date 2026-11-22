@@ -10,7 +10,7 @@ export default function EnquiryForm() {
     name: "",
     phone: "",
     email: "",
-    projectType: "Residential Construction",
+    projectType: "Turnkey Residential Villa",
     preferredContact: "WhatsApp",
     message: "",
     honeypot: "",
@@ -20,12 +20,13 @@ export default function EnquiryForm() {
   const [submittedOption, setSubmittedOption] = useState<"whatsapp" | "email" | null>(null);
 
   const projectTypes = [
-    "Residential Construction",
-    "Commercial Building",
-    "Industrial Facility",
-    "Renovation & Retrofitting",
-    "Structural Design & Audit",
-    "Site Supervision Only",
+    "Turnkey Residential Villa",
+    "Independent Duplex House",
+    "Commercial Building Complex",
+    "Pre-Engineered Building (PEB Warehouse)",
+    "Structural Design & 2D/3D Planning",
+    "Renovation & Elevation Retrofitting",
+    "Site Supervision & Quality Audit",
   ];
 
   const handleInputChange = (
@@ -71,25 +72,25 @@ export default function EnquiryForm() {
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-brand-line shadow-sm p-6 sm:p-8 lg:p-10">
+    <div className="bg-white rounded-3xl border-2 border-slate-200 shadow-xl p-6 sm:p-8 lg:p-10">
       {submittedOption ? (
         <div
           role="status"
           aria-live="polite"
-          className="p-8 text-center bg-emerald-50 rounded-xl border border-emerald-200"
+          className="p-8 text-center bg-emerald-50 rounded-2xl border border-emerald-200"
         >
-          <div className="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h3 className="text-xl font-bold uppercase tracking-tight text-slate-900">
-            Enquiry Dispatched Successfully!
+          <h3 className="text-xl font-black uppercase tracking-tight text-slate-900">
+            Enquiry Prepared Successfully!
           </h3>
           <p className="mt-2 text-sm text-slate-600 max-w-md mx-auto">
             {submittedOption === "whatsapp"
-              ? "Your enquiry has been prepared and opened in WhatsApp. Our structural engineer will respond shortly."
-              : "Your email client has been opened with your pre-filled enquiry. Hit send to submit."}
+              ? "Your enquiry has been formatted and opened directly in WhatsApp. Er. M. Joshva Priyan will respond promptly."
+              : "Your email client has been opened with your pre-filled enquiry. Hit send to dispatch."}
           </p>
           <button
             type="button"
@@ -99,15 +100,15 @@ export default function EnquiryForm() {
                 name: "",
                 phone: "",
                 email: "",
-                projectType: "Residential Construction",
+                projectType: "Turnkey Residential Villa",
                 preferredContact: "WhatsApp",
                 message: "",
                 honeypot: "",
               });
             }}
-            className="mt-6 inline-flex items-center px-5 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider bg-slate-900 text-white hover:bg-slate-800 transition-colors"
+            className="mt-6 inline-flex items-center px-6 py-3 rounded-xl text-xs font-extrabold uppercase tracking-wider bg-slate-900 text-white hover:bg-slate-800 transition-colors shadow"
           >
-            Submit Another Enquiry
+            Submit Another Project Requirement
           </button>
         </div>
       ) : (
@@ -130,7 +131,7 @@ export default function EnquiryForm() {
           <div>
             <label
               htmlFor="name"
-              className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5"
+              className="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-1.5"
             >
               Full Name <span className="text-red-600">*</span>
             </label>
@@ -140,15 +141,15 @@ export default function EnquiryForm() {
               name="name"
               required
               maxLength={100}
-              placeholder="e.g. Rajesh Sharma"
+              placeholder="e.g. Ramesh K. (Dindigul)"
               value={formData.name}
               onChange={handleInputChange}
               aria-invalid={!!errors.name}
               aria-describedby={errors.name ? "name-error" : undefined}
-              className={`w-full px-4 py-3 rounded-lg border text-sm text-slate-900 placeholder-slate-400 focus:outline-none transition-colors ${
+              className={`w-full px-4 py-3.5 rounded-xl border text-sm text-slate-900 placeholder-slate-400 focus:outline-none transition-colors ${
                 errors.name
                   ? "border-red-500 focus:ring-2 focus:ring-red-200"
-                  : "border-slate-300 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
+                  : "border-slate-300 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
               }`}
             />
             {errors.name && (
@@ -163,9 +164,9 @@ export default function EnquiryForm() {
             <div>
               <label
                 htmlFor="phone"
-                className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5"
+                className="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-1.5"
               >
-                Phone Number <span className="text-red-600">*</span>
+                Mobile / Phone <span className="text-red-600">*</span>
               </label>
               <input
                 type="tel"
@@ -178,10 +179,10 @@ export default function EnquiryForm() {
                 onChange={handleInputChange}
                 aria-invalid={!!errors.phone}
                 aria-describedby={errors.phone ? "phone-error" : undefined}
-                className={`w-full px-4 py-3 rounded-lg border text-sm text-slate-900 placeholder-slate-400 focus:outline-none transition-colors ${
+                className={`w-full px-4 py-3.5 rounded-xl border text-sm text-slate-900 placeholder-slate-400 focus:outline-none transition-colors ${
                   errors.phone
                     ? "border-red-500 focus:ring-2 focus:ring-red-200"
-                    : "border-slate-300 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
+                    : "border-slate-300 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
                 }`}
               />
               {errors.phone && (
@@ -194,7 +195,7 @@ export default function EnquiryForm() {
             <div>
               <label
                 htmlFor="email"
-                className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5"
+                className="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-1.5"
               >
                 Email Address <span className="text-slate-400 text-xs normal-case">(optional)</span>
               </label>
@@ -203,15 +204,15 @@ export default function EnquiryForm() {
                 id="email"
                 name="email"
                 maxLength={120}
-                placeholder="rajesh@example.com"
+                placeholder="ramesh@example.com"
                 value={formData.email}
                 onChange={handleInputChange}
                 aria-invalid={!!errors.email}
                 aria-describedby={errors.email ? "email-error" : undefined}
-                className={`w-full px-4 py-3 rounded-lg border text-sm text-slate-900 placeholder-slate-400 focus:outline-none transition-colors ${
+                className={`w-full px-4 py-3.5 rounded-xl border text-sm text-slate-900 placeholder-slate-400 focus:outline-none transition-colors ${
                   errors.email
                     ? "border-red-500 focus:ring-2 focus:ring-red-200"
-                    : "border-slate-300 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
+                    : "border-slate-300 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
                 }`}
               />
               {errors.email && (
@@ -227,7 +228,7 @@ export default function EnquiryForm() {
             <div>
               <label
                 htmlFor="projectType"
-                className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5"
+                className="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-1.5"
               >
                 Project Type <span className="text-red-600">*</span>
               </label>
@@ -238,7 +239,7 @@ export default function EnquiryForm() {
                 onChange={handleInputChange}
                 aria-invalid={!!errors.projectType}
                 aria-describedby={errors.projectType ? "type-error" : undefined}
-                className="w-full px-4 py-3 rounded-lg border border-slate-300 text-sm text-slate-900 bg-white focus:outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 transition-colors"
+                className="w-full px-4 py-3.5 rounded-xl border border-slate-300 text-sm text-slate-900 bg-white focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-colors"
               >
                 {projectTypes.map((type) => (
                   <option key={type} value={type}>
@@ -256,16 +257,16 @@ export default function EnquiryForm() {
             <div>
               <label
                 htmlFor="preferredContact"
-                className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5"
+                className="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-1.5"
               >
-                Preferred Contact Method
+                Preferred Contact Channel
               </label>
               <select
                 id="preferredContact"
                 name="preferredContact"
                 value={formData.preferredContact}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 rounded-lg border border-slate-300 text-sm text-slate-900 bg-white focus:outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 transition-colors"
+                className="w-full px-4 py-3.5 rounded-xl border border-slate-300 text-sm text-slate-900 bg-white focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-colors"
               >
                 <option value="WhatsApp">WhatsApp Message</option>
                 <option value="Phone">Direct Phone Call</option>
@@ -278,9 +279,9 @@ export default function EnquiryForm() {
           <div>
             <label
               htmlFor="message"
-              className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5"
+              className="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-1.5"
             >
-              Project Details & Requirements <span className="text-red-600">*</span>
+              Site & Building Details <span className="text-red-600">*</span>
             </label>
             <textarea
               id="message"
@@ -288,15 +289,15 @@ export default function EnquiryForm() {
               rows={4}
               required
               maxLength={2000}
-              placeholder="Please describe your plot size, location, estimated budget, timeline, and whether you require structural drawings or complete turnkey construction."
+              placeholder="Tell us about your plot location (e.g. Palani Road, Nagal Nagar), plot size, number of floors, budget, or whether you need 2D plan and 3D elevation drawings."
               value={formData.message}
               onChange={handleInputChange}
               aria-invalid={!!errors.message}
               aria-describedby={errors.message ? "message-error" : undefined}
-              className={`w-full px-4 py-3 rounded-lg border text-sm text-slate-900 placeholder-slate-400 focus:outline-none transition-colors ${
+              className={`w-full px-4 py-3.5 rounded-xl border text-sm text-slate-900 placeholder-slate-400 focus:outline-none transition-colors ${
                 errors.message
                   ? "border-red-500 focus:ring-2 focus:ring-red-200"
-                  : "border-slate-300 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
+                  : "border-slate-300 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
               }`}
             />
             {errors.message && (
@@ -311,7 +312,7 @@ export default function EnquiryForm() {
             <button
               type="button"
               onClick={() => handleSubmit("whatsapp")}
-              className="flex-1 inline-flex items-center justify-center px-6 py-3.5 rounded-lg text-sm font-bold bg-[#25D366] text-white hover:bg-[#20ba59] shadow-md hover:shadow-lg transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#25D366]"
+              className="flex-1 inline-flex items-center justify-center px-6 py-4 rounded-xl text-sm font-extrabold bg-[#25D366] text-white hover:bg-[#20ba59] shadow-lg hover:shadow-xl hover:scale-[1.01] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#25D366]"
             >
               <svg className="w-5 h-5 mr-2 fill-current" viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766 0-3.18-2.587-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.007c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86.174.086.275.072.376-.044.101-.116.433-.506.549-.68.116-.173.231-.144.39-.086s1.011.477 1.184.564.289.13.332.202c.043.073.043.419-.101.824z" />
@@ -322,7 +323,7 @@ export default function EnquiryForm() {
             <button
               type="button"
               onClick={() => handleSubmit("email")}
-              className="flex-1 inline-flex items-center justify-center px-6 py-3.5 rounded-lg text-sm font-bold bg-brand-ink text-white hover:bg-brand-ink-3 border border-slate-700 shadow-md transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-brand-ink"
+              className="flex-1 inline-flex items-center justify-center px-6 py-4 rounded-xl text-sm font-extrabold bg-slate-900 text-white hover:bg-slate-800 border border-slate-700 shadow-md transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slate-900"
             >
               <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path
@@ -336,7 +337,7 @@ export default function EnquiryForm() {
             </button>
           </div>
           <p className="text-[11px] text-center text-slate-500">
-            No server processing or database storage. Your enquiry is compiled directly on your device.
+            Direct client-side encryption. No database storage or spam marketing lists.
           </p>
         </form>
       )}

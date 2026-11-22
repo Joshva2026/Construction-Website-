@@ -10,20 +10,25 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          primary: '#f2a900', // Signature construction amber/orange
-          'primary-hover': '#d99400',
-          'primary-light': '#fff8eb',
-          ink: '#0f141c', // Deep steel dark
-          'ink-2': '#161d28',
-          'ink-3': '#222c3b',
-          paper: '#f5f3ee',
-          'paper-2': '#ebe8e0',
-          line: '#d9d5cb',
-          muted: '#64748b',
+          primary: '#F59E0B', // Vivid Construction Safety Gold / Amber
+          'primary-hover': '#D97706',
+          'primary-light': '#FEF3C7',
+          'primary-dark': '#B45309',
+          ink: '#0F172A', // High-contrast structural slate
+          'ink-2': '#1E293B',
+          'ink-3': '#334155',
+          paper: '#F8FAFC', // Clean modern architectural canvas
+          'paper-2': '#F1F5F9',
+          line: '#E2E8F0',
+          muted: '#64748B',
         },
       },
       fontFamily: {
         sans: ['var(--font-inter)', 'sans-serif'],
+      },
+      boxShadow: {
+        'construction': '0 4px 20px -2px rgba(15, 23, 42, 0.12), 0 2px 6px -1px rgba(245, 158, 11, 0.15)',
+        'construction-lg': '0 10px 30px -4px rgba(15, 23, 42, 0.2), 0 4px 12px -2px rgba(245, 158, 11, 0.2)',
       },
     },
   },

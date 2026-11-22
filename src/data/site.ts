@@ -41,11 +41,11 @@ export const siteConfig: SiteConfig = {
   name: "Joshva Construction",
   tagline: "Engineering Excellence & Architectural Precision in Tamil Nadu",
   description:
-    "Leading civil engineering and turnkey construction company based in Dindigul, Tamil Nadu. Specializing in residential villas, commercial complexes, structural design, and modern turnkey execution across South India.",
+    "Leading civil engineering and turnkey construction company based in Dindigul, Tamil Nadu. Specializing in independent duplex villas, commercial complexes, structural design, and turnkey execution across South India.",
   engineerName: "Er. M. Joshva Priyan, B.E. (Civil)",
-  phone: "+91 98765 43210", // TODO: Replace with your direct phone number
-  whatsappNumber: "919876543210", // TODO: Replace with your WhatsApp number (digits only, no +)
-  email: "joshvaconstruction@gmail.com", // TODO: Replace with your preferred contact email
+  phone: "+91 98765 43210",
+  whatsappNumber: "919876543210",
+  email: "joshvaconstruction@gmail.com",
   address: "Palani Road, Near Collectorate, Dindigul, Tamil Nadu - 624004, India",
   city: "Dindigul",
   state: "Tamil Nadu",
@@ -87,7 +87,7 @@ export const siteConfig: SiteConfig = {
       title: "Structural Design & Planning",
       description:
         "Comprehensive 2D/3D architectural CAD planning, RCC foundation design, earthquake-resistant reinforcement detailing, and structural stability certifications adhering to Indian Standard (IS) codes.",
-      image: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&auto=format&fit=crop&q=80",
+      image: "/images/indian-rcc-site.jpg",
       features: ["Seismic IS Code Detailing", "Soil Assessment & Pile Design", "Full 2D/3D CAD Blueprints"],
     },
     {
@@ -96,7 +96,7 @@ export const siteConfig: SiteConfig = {
       title: "Turnkey Civil Construction",
       description:
         "Complete end-to-end building contracts for independent duplex houses, luxury villas, and multi-storey apartments. We handle raw material sourcing, labor supervision, and total handover with fixed-cost guarantees.",
-      image: "https://images.unsplash.com/photo-1541888946425-d81bb19940f2?w=800&auto=format&fit=crop&q=80",
+      image: "/images/indian-contemporary-villa.jpg",
       features: ["Fixed Cost & Schedule", "Grade-A Bricks & Steel", "Transparent Stage Handover"],
     },
     {
@@ -105,7 +105,7 @@ export const siteConfig: SiteConfig = {
       title: "Commercial & Pre-Engineered Buildings",
       description:
         "Construction of commercial complexes, shopping malls, institutional halls, and pre-engineered steel warehouses (PEB) with heavy-duty laser-screeded flooring and modern glass curtain walls.",
-      image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&auto=format&fit=crop&q=80",
+      image: "/images/indian-commercial-complex.jpg",
       features: ["PEB Heavy Steel Framing", "Laser-Screed Flooring", "HVAC & Fire Safety Integration"],
     },
     {
@@ -114,7 +114,7 @@ export const siteConfig: SiteConfig = {
       title: "Renovation & Structural Retrofitting",
       description:
         "Structural health audits, column jacketing, roof waterproofing, seismic retrofitting, and modern elevation remodeling for existing residential and heritage commercial properties in Tamil Nadu.",
-      image: "https://images.unsplash.com/photo-1581589127319-27996835facc?w=800&auto=format&fit=crop&q=80",
+      image: "/images/indian-elevation-renovation.jpg",
       features: ["Non-Destructive Testing", "Column & Beam Jacketing", "Elevation Makeovers"],
     },
   ],

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project Detail - Civil Engineering Works</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <header class="nav">
+    <a href="index.html" class="brand">Civil Engineering<span>Works</span></a>
+    <a href="index.html" class="btn nav-cta" style="margin-left:auto;">Back to Home</a>
+  </header>
+
+  <main>
+    <section class="section" style="padding: 4rem 1rem 3rem;">
+      <div style="max-width: 1280px; margin: 0 auto; padding: 0 1rem;">
+        <div id="projectDetail"></div>
+        <a href="index.html" class="btn" style="margin-top: 2rem; width: auto;">&larr; Back to all projects</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer" style="margin-top: 3rem;">
+    <div class="footer-inner">
+      <div>
+        <p class="footer-brand">Civil Engineering<span>Works</span></p>
+        <p>Licensed civil engineer. Quality, safety and on-time delivery.</p>
+      </div>
+      <p class="copy">&copy; <span id="year"></span> Civil Engineering Works. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="data.js"></script>
+  <script>
+    (function () {
+      const params = new URLSearchParams(location.search);
+      const id = params.get("id");
+
+      let project = null;
+      let listType = "";
+
+      const w = DEFAULT_DATA.workingSites.find((p) => p.id === id);
+      if (w) { project = w; listType = "working"; }
+      else {
+        const c = DEFAULT_DATA.completedSites.find((p) => p.id === id);
+        if (c) { project = c; listType = "completed"; }
+      }
+
+      const container = document.getElementById("projectDetail");
+      const yearEl = document.getElementById("year");
+      if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+      if (!project) {
+        container.innerHTML = `<p class="empty" style="text-align:center;padding:2rem;">Project not found.</p>`;
+        return;
+      }
+
+      document.title = `${escHtml(project.name)} - Civil Engineering Works`;
+
+      const pct = listType === "working" ? Math.round(Number(project.progress || 0)) : null;
+
+      container.innerHTML = `
+        <div class="project-hero" style="position:relative;border-radius:12px;overflow:hidden;margin-bottom:2rem;box-shadow:var(--shadow);">
+          ${project.image
+            ? `<img src="${escHtml(project.image)}" alt="${escHtml(project.name)}" style="width:100%;height:420px;object-fit:cover;display:block;">`
+            : `<div style="height:420px;background:var(--ink-3);display:flex;align-items:center;justify-content:center;color:#c3cad6;">No image available</div>`}
+          <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent, rgba(15,20,28,.9));padding:2rem 1.5rem 1.5rem;">
+            ${listType === "working"
+              ? `<span class="chip" style="margin-right:.5rem;">${escHtml(project.status)}</span><span class="chip">${pct}% complete</span>`
+              : `<span class="chip done">Completed ${escHtml(project.year)}</span>`}
+            <h1 style="color:var(--white);font-size:clamp(1.75rem,4vw,2.5rem);margin:.5rem 0 .25rem;line-height:1.2;">${escHtml(project.name)}</h1>
+            <p style="color:#c3cad6;margin:0;font-size:1rem;">${escHtml(project.location)} &middot; ${escHtml(project.type)}</p>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:2rem;">
+          <div>
+            <h3 style="font-size:1.5rem;text-transform:uppercase;margin-bottom:1rem;">Project Details</h3>
+            <p style="line-height:1.8;color:var(--muted);font-size:1.05rem;">${escHtml(project.description)}</p>
+
+            <div style="margin-top:2rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;">
+              <div style="background:var(--paper);padding:1.5rem;border-radius:8px;border:1px solid var(--line);">
+                <p style="font-size:.75rem;text-transform:uppercase;color:var(--muted);letter-spacing:.08em;margin-bottom:.25rem;">Location</p>
+                <p style="font-weight:600;">${escHtml(project.location)}</p>
+              </div>
+              <div style="background:var(--paper);padding:1.5rem;border-radius:8px;border:1px solid var(--line);">
+                <p style="font-size:.75rem;text-transform:uppercase;color:var(--muted);letter-spacing:.08em;margin-bottom:.25rem;">Type</p>
+                <p style="font-weight:600;">${escHtml(project.type)}</p>
+              </div>
+              ${project.startDate
+                ? `<div style="background:var(--paper);padding:1.5rem;border-radius:8px;border:1px solid var(--line);">
+                  <p style="font-size:.75rem;text-transform:uppercase;color:var(--muted);letter-spacing:.08em;margin-bottom:.25rem;">Start Date</p>
+                  <p style="font-weight:600;">${escHtml(project.startDate)}</p>
+                </div>`
+                : ""}
+              ${project.area
+                ? `<div style="background:var(--paper);padding:1.5rem;border-radius:8px;border:1px solid var(--line);">
+                  <p style="font-size:.75rem;text-transform:uppercase;color:var(--muted);letter-spacing:.08em;margin-bottom:.25rem;">Area / Size</p>
+                  <p style="font-weight:600;">${escHtml(project.area)}</p>
+                </div>`
+                : ""}
+              ${project.client
+                ? `<div style="background:var(--paper);padding:1.5rem;border-radius:8px;border:1px solid var(--line);">
+                  <p style="font-size:.75rem;text-transform:uppercase;color:var(--muted);letter-spacing:.08em;margin-bottom:.25rem;">Client</p>
+                  <p style="font-weight:600;">${escHtml(project.client)}</p>
+                </div>`
+                : ""}
+            </div>
+
+            ${listType === "working"
+              ? `
+              <div style="margin-top:2rem;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
+                  <span style="font-size:.75rem;text-transform:uppercase;color:var(--muted);letter-spacing:.08em;">Construction Progress</span>
+                  <strong style="font-size:1.25rem;">${pct}%</strong>
+                </div>
+                <div class="mini-bar" style="margin-bottom:1rem;"><span style="width:${pct}%"></span></div>
+              </div>
+              `
+              : ""
+            }
+          </div>
+
+          <div>
+            <div class="contact-box">
+              <h3 style="margin-top:0;">Contact Us</h3>
+              <p style="margin-bottom:1rem;">Interested in a similar project? Get in touch with our team.</p>
+              <p style="margin-bottom:.5rem;"><strong>Phone:</strong> <a href="tel:+919876543210" style="color:var(--accent);">+91 98765 43210</a></p>
+              <p style="margin-bottom:.5rem;"><strong>Email:</strong> <a href="mailto:hello@civilengineeringworks.in" style="color:var(--accent);">hello@civilengineeringworks.in</a></p>
+              <p style="margin-bottom:1rem;"><strong>Address:</strong> 124 MG Road, Civil Lines, Your City, India</p>
+              <a href="index.html#enquiry" class="btn full">Send Enquiry</a>
+            </div>
+          </div>
+        </div>
+      `;
+    })();
+
+    function escHtml(v) {
+      return String(v ?? "").replace(/[&<>"']/g, (c) =>
+        ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    }
+  </script>
+</body>
+</html>

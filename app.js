@@ -121,12 +121,10 @@
   }
 
   function imageBlock(item, fallbackLabel) {
-    const style = item.image ? ` style="background-image:url('${item.image}')"` : "";
-    const label = item.image ? "" : `<div class="ph">${esc(fallbackLabel)}</div>`;
-    const imgTag = item.image
-      ? `<img src="${esc(item.image)}" alt="${esc(item.name)}" loading="lazy" />`
-      : label;
-    return `<div class="card-img"${style}>${imgTag}</div>`;
+    if (item.image) {
+      return `<div class="card-img" style="background-image:url('${esc(item.image)}')"></div>`;
+    }
+    return `<div class="card-img"><div class="ph">${esc(fallbackLabel)}</div></div>`;
   }
 
   function statusChip(status) {
@@ -143,7 +141,7 @@
     grid.innerHTML = store.workingSites.map((p) => {
       const pct = clamp(Number(p.progress) || 0, 0, 100);
       return `
-      <article class="card">
+      <article class="card" onclick="location.href='project.html?id=${p.id}'">
         ${imageBlock(p, p.type)}
         <div class="card-body">
           ${statusChip(p.status)}
@@ -164,7 +162,7 @@
       return;
     }
     grid.innerHTML = store.completedSites.map((p) => `
-      <article class="card">
+      <article class="card" onclick="location.href='project.html?id=${p.id}'">
         ${imageBlock(p, p.type)}
         <div class="card-body">
           <span class="chip done">Completed ${esc(p.year)}</span>
@@ -198,6 +196,7 @@
     if (m.video) {
       const v = document.createElement("video");
       v.src = m.video;
+      v.poster = "https://images.unsplash.com/photo-1541888946425-d81bb19940f2?w=1200&q=80";
       v.muted = true;
       v.playsInline = true;
       v.preload = "auto";

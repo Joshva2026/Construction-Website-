@@ -206,12 +206,14 @@
       v.classList.add("active");
       v.addEventListener("loadedmetadata", () => {
         hero.ready = true;
-        if (!hero.isMobile) v.play().catch(() => {}); // autoplay on desktop
+        // Desktop: do NOT autoplay — video controlled by scroll scrub in updateHero()
+        // Mobile: play normally
+        if (hero.isMobile) v.play().catch(() => {});
         onScrollHero();
       });
       v.addEventListener("canplay", () => {
         hero.ready = true;
-        if (!hero.isMobile) v.play().catch(() => {});
+        if (hero.isMobile) v.play().catch(() => {});
         onScrollHero();
       });
       v.addEventListener("error", () => {

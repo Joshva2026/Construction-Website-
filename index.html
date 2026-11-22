@@ -183,21 +183,31 @@
       </div>
     </section>
 
-    <!-- ADMIN (bottom of page) -->
-    <section id="admin" class="section admin reveal">
+    <!-- ADMIN ICON (small floating button, opens login modal on tap) -->
+    <button class="admin-icon" id="adminIcon" aria-label="Admin login" title="Admin">🔐</button>
+
+    <!-- Admin login modal (hidden by default) -->
+    <div id="adminModal" class="modal" hidden>
+      <div class="modal-backdrop" id="modalBackdrop"></div>
+      <div class="modal-box">
+        <button class="modal-close" id="modalClose">&times;</button>
+        <div class="card-form narrow">
+          <form id="loginForm" novalidate>
+            <label>Admin password
+              <input name="password" type="password" required autocomplete="current-password" placeholder="••••••••" />
+            </label>
+            <button type="submit" class="btn full">Open admin</button>
+            <p class="form-msg" id="loginMsg" role="status"></p>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN PANEL (bottom of page, hidden until logged in) -->
+    <section id="admin" class="section admin reveal" hidden>
       <div class="section-head">
         <p class="eyebrow">Owner only</p>
         <h2>Admin Panel</h2>
-      </div>
-
-      <div id="adminLogin" class="card-form narrow">
-        <form id="loginForm" novalidate>
-          <label>Admin password
-            <input name="password" type="password" required autocomplete="current-password" placeholder="••••••••" />
-          </label>
-          <button type="submit" class="btn full">Open admin</button>
-          <p class="form-msg" id="loginMsg" role="status"></p>
-        </form>
       </div>
 
       <div id="adminPanel" hidden>

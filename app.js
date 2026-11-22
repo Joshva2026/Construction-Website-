@@ -203,9 +203,15 @@
       v.setAttribute("muted", "");
       v.setAttribute("playsinline", "");
       v.setAttribute("aria-hidden", "true");
+      v.classList.add("active");
       v.addEventListener("loadedmetadata", () => {
         hero.ready = true;
         if (!hero.isMobile) v.play().catch(() => {}); // autoplay on desktop
+        onScrollHero();
+      });
+      v.addEventListener("canplay", () => {
+        hero.ready = true;
+        if (!hero.isMobile) v.play().catch(() => {});
         onScrollHero();
       });
       v.addEventListener("error", () => {
@@ -213,9 +219,15 @@
         if (Array.isArray(m.photos) && m.photos.length) {
           setupHeroPhotos(m.photos);
         } else {
-          showHeroEmpty("The hero video could not be loaded. Check the video path in admin Settings.");
+          showHeroEmpty("Add construction footage in the admin panel under Settings &rarr; Hero footage.");
         }
       });
+      // Timeout fallback: if video doesn't start in 5 seconds, show photos
+      setTimeout(() => {
+        if (!hero.ready && hero.video && Array.isArray(m.photos) && m.photos.length) {
+          setupHeroPhotos(m.photos);
+        }
+      }, 5000);
       container.appendChild(v);
       hero.video = v;
       v.load();
@@ -251,7 +263,7 @@
       const img = document.createElement("img");
       img.src = src;
       img.alt = "";
-      img.loading = "lazy";
+      img.loading = "eager";
       if (i === 0) img.classList.add("active", "loaded");
       else img.classList.add("loaded");
       container.appendChild(img);
@@ -352,8 +364,9 @@
 
   function setLoggedIn(on) {
     sessionStorage.setItem(SESSION_KEY, on ? "1" : "");
-    $("#adminLogin").hidden = on;
-    $("#adminPanel").hidden = !on;
+    $("#adminIcon").hidden = on;           // hide icon when logged in
+    $("#adminModal").hidden = on;          // close modal when logged in
+    $("#admin").hidden = !on;              // show admin panel when logged in
     if (on) { renderAdmin(); updateBadge(); }
   }
 
@@ -577,6 +590,23 @@
   function bindAdmin() {
     const panel = $("#adminPanel");
 
+    // Admin icon → open login modal
+    $("#adminIcon").addEventListener("click", () => {
+      const modal = $("#adminModal");
+      if (modal) { modal.hidden = false; setTimeout(() => modal.classList.add("open"), 10); }
+    });
+
+    // Modal close button & backdrop → close modal
+    $("#modalClose").addEventListener("click", () => {
+      const modal = $("#adminModal");
+      if (modal) { modal.classList.remove("open"); setTimeout(() => { modal.hidden = true; }, 300); }
+    });
+    $("#modalBackdrop").addEventListener("click", () => {
+      const modal = $("#adminModal");
+      if (modal) { modal.classList.remove("open"); setTimeout(() => { modal.hidden = true; }, 300); }
+    });
+
+    // Login form inside modal
     $("#loginForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const pw = new FormData(e.target).get("password");

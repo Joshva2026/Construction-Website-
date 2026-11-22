@@ -4,8 +4,30 @@ import os from "os";
 import { siteConfig as defaultSiteConfig, SiteConfig, SiteService, SiteStat } from "@/data/site";
 import { projects as defaultProjects, Project } from "@/data/projects";
 
+/*
+ * STORAGE
+ *
+ * 1. Production (Vercel): set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN
+ *    (or KV_REST_API_URL / KV_REST_API_TOKEN from Vercel KV). All admin changes are
+ *    stored in that shared database, so every visitor sees the same data.
+ * 2. Local development / own server: no variables needed. Data is read from and
+ *    written to src/data/store/*.json.
+ *
+ * Without a shared database on Vercel, the filesystem is read-only and each
+ * serverless instance has its own /tmp, so admin changes cannot reach visitors.
+ * In that case writes now fail with a clear error instead of silently disappearing.
+ */
+
 const BUNDLED_DATA_DIR = path.join(process.cwd(), "src", "data", "store");
 const TMP_DATA_DIR = path.join(os.tmpdir(), "joshva-store");
+
+const KV_URL = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL || "";
+const KV_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN || "";
+const KV_ENABLED = Boolean(KV_URL && KV_TOKEN);
+const ON_VERCEL = Boolean(process.env.VERCEL);
+
+export const STORAGE_WARNING =
+  "Storage is not configured. Add UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN in the Vercel project settings, then redeploy.";
 
 export interface EnquiryRecord {
   id: string;
@@ -20,60 +42,85 @@ export interface EnquiryRecord {
   notes?: string;
 }
 
-// In-memory cache to guarantee instant reads and serverless survivability
-let memorySiteConfig: SiteConfig | null = null;
-let memoryProjects: Project[] | null = null;
-let memoryEnquiries: EnquiryRecord[] | null = null;
+/* ---------------- Low-level storage ---------------- */
 
-async function safeReadFile<T>(filename: string, fallback: T): Promise<T> {
-  // 1. Try reading from writable /tmp first (if modified in serverless session)
-  try {
-    const tmpPath = path.join(TMP_DATA_DIR, filename);
-    const data = await fs.readFile(tmpPath, "utf-8");
-    return JSON.parse(data) as T;
-  } catch {
-    // ignore
-  }
+const KEYS = {
+  siteConfig: "site-config.json",
+  projects: "projects.json",
+  enquiries: "enquiries.json",
+} as const;
 
-  // 2. Try reading from bundled static store
-  try {
-    const bundledPath = path.join(BUNDLED_DATA_DIR, filename);
-    const data = await fs.readFile(bundledPath, "utf-8");
-    return JSON.parse(data) as T;
-  } catch {
-    // ignore
-  }
-
-  // 3. Fallback to hardcoded default
-  return fallback;
+async function kvRead<T>(key: string): Promise<T | null> {
+  const res = await fetch(`${KV_URL}/get/${encodeURIComponent(key)}`, {
+    headers: { Authorization: `Bearer ${KV_TOKEN}` },
+    cache: "no-store",
+  });
+  if (!res.ok) throw new Error(`Storage read failed (${res.status})`);
+  const body = (await res.json()) as { result: string | null };
+  return body.result ? (JSON.parse(body.result) as T) : null;
 }
 
-async function safeWriteFile(filename: string, data: any): Promise<void> {
-  const jsonStr = JSON.stringify(data, null, 2);
+async function kvWrite(key: string, data: unknown): Promise<void> {
+  const res = await fetch(KV_URL, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${KV_TOKEN}`, "Content-Type": "application/json" },
+    body: JSON.stringify(["SET", key, JSON.stringify(data)]),
+    cache: "no-store",
+  });
+  if (!res.ok) throw new Error(`Storage write failed (${res.status})`);
+}
 
-  // 1. Try writing to bundled store (works locally in dev and VPS)
+async function readFileStore<T>(filename: string): Promise<T | null> {
+  // Prefer the writable /tmp copy (set by a previous write in this environment)
+  try {
+    return JSON.parse(await fs.readFile(path.join(TMP_DATA_DIR, filename), "utf-8")) as T;
+  } catch { /* not there */ }
+  try {
+    return JSON.parse(await fs.readFile(path.join(BUNDLED_DATA_DIR, filename), "utf-8")) as T;
+  } catch { /* not there */ }
+  return null;
+}
+
+async function writeFileStore(filename: string, data: unknown): Promise<void> {
+  const jsonStr = JSON.stringify(data, null, 2);
+  let saved = false;
   try {
     await fs.mkdir(BUNDLED_DATA_DIR, { recursive: true });
     await fs.writeFile(path.join(BUNDLED_DATA_DIR, filename), jsonStr, "utf-8");
-  } catch {
-    // Read-only filesystem (expected on Vercel lambda /var/task)
-  }
-
-  // 2. Try writing to /tmp (always writable on Vercel / AWS Lambda)
+    saved = true;
+  } catch { /* read-only filesystem */ }
   try {
     await fs.mkdir(TMP_DATA_DIR, { recursive: true });
     await fs.writeFile(path.join(TMP_DATA_DIR, filename), jsonStr, "utf-8");
-  } catch {
-    // Ignore fallback
-  }
+    saved = true;
+  } catch { /* ignore */ }
+  if (!saved) throw new Error("Could not save data to disk.");
 }
 
-// ---------------- Site Config Operations ---------------- //
+/** Read a store document: shared database when configured, otherwise files, otherwise defaults. */
+async function readStore<T>(key: string, fallback: T): Promise<T> {
+  if (KV_ENABLED) {
+    const value = await kvRead<T>(key);
+    return value ?? fallback;
+  }
+  const value = await readFileStore<T>(key);
+  return value ?? fallback;
+}
+
+/** Write a store document. Throws if nothing durable is available. */
+async function writeStore(key: string, data: unknown): Promise<void> {
+  if (KV_ENABLED) {
+    await kvWrite(key, data);
+    return;
+  }
+  if (ON_VERCEL) throw new Error(STORAGE_WARNING);
+  await writeFileStore(key, data);
+}
+
+/* ---------------- Site Config Operations ---------------- */
 
 export async function getSiteConfig(): Promise<SiteConfig> {
-  if (memorySiteConfig) return memorySiteConfig;
-  memorySiteConfig = await safeReadFile<SiteConfig>("site-config.json", defaultSiteConfig);
-  return memorySiteConfig;
+  return readStore<SiteConfig>(KEYS.siteConfig, defaultSiteConfig);
 }
 
 export async function updateSiteConfig(newConfig: Partial<SiteConfig>): Promise<SiteConfig> {
@@ -86,18 +133,14 @@ export async function updateSiteConfig(newConfig: Partial<SiteConfig>): Promise<
       ...(newConfig.stats || {}),
     },
   };
-
-  memorySiteConfig = updated;
-  await safeWriteFile("site-config.json", updated);
+  await writeStore(KEYS.siteConfig, updated);
   return updated;
 }
 
-// ---------------- Projects Operations ---------------- //
+/* ---------------- Projects Operations ---------------- */
 
 export async function getProjects(): Promise<Project[]> {
-  if (memoryProjects) return memoryProjects;
-  memoryProjects = await safeReadFile<Project[]>("projects.json", defaultProjects);
-  return memoryProjects;
+  return readStore<Project[]>(KEYS.projects, defaultProjects);
 }
 
 export async function getProjectBySlug(slug: string): Promise<Project | undefined> {
@@ -116,8 +159,7 @@ export async function saveProject(project: Project, originalSlug?: string): Prom
     all.unshift(project);
   }
 
-  memoryProjects = all;
-  await safeWriteFile("projects.json", all);
+  await writeStore(KEYS.projects, all);
   return project;
 }
 
@@ -127,13 +169,11 @@ export async function deleteProject(slug: string): Promise<boolean> {
   if (filtered.length === all.length) {
     return false;
   }
-
-  memoryProjects = filtered;
-  await safeWriteFile("projects.json", filtered);
+  await writeStore(KEYS.projects, filtered);
   return true;
 }
 
-// ---------------- Services Operations ---------------- //
+/* ---------------- Services Operations ---------------- */
 
 export async function updateServices(services: SiteService[]): Promise<SiteService[]> {
   const config = await getSiteConfig();
@@ -142,7 +182,7 @@ export async function updateServices(services: SiteService[]): Promise<SiteServi
   return services;
 }
 
-// ---------------- Stats Operations ---------------- //
+/* ---------------- Stats Operations ---------------- */
 
 export async function updateStats(stats: Record<string, SiteStat>): Promise<Record<string, SiteStat>> {
   const config = await getSiteConfig();
@@ -154,7 +194,7 @@ export async function updateStats(stats: Record<string, SiteStat>): Promise<Reco
   return config.stats;
 }
 
-// ---------------- Enquiries Operations ---------------- //
+/* ---------------- Enquiries Operations ---------------- */
 
 const defaultInitialEnquiries: EnquiryRecord[] = [
   {
@@ -183,9 +223,7 @@ const defaultInitialEnquiries: EnquiryRecord[] = [
 ];
 
 export async function getEnquiries(): Promise<EnquiryRecord[]> {
-  if (memoryEnquiries) return memoryEnquiries;
-  memoryEnquiries = await safeReadFile<EnquiryRecord[]>("enquiries.json", defaultInitialEnquiries);
-  return memoryEnquiries;
+  return readStore<EnquiryRecord[]>(KEYS.enquiries, defaultInitialEnquiries);
 }
 
 export async function addEnquiry(enquiry: Omit<EnquiryRecord, "id" | "createdAt" | "status">): Promise<EnquiryRecord> {
@@ -197,9 +235,7 @@ export async function addEnquiry(enquiry: Omit<EnquiryRecord, "id" | "createdAt"
     status: "New",
   };
   all.unshift(record);
-
-  memoryEnquiries = all;
-  await safeWriteFile("enquiries.json", all);
+  await writeStore(KEYS.enquiries, all);
   return record;
 }
 
@@ -216,9 +252,7 @@ export async function updateEnquiryStatus(
   if (notes !== undefined) {
     item.notes = notes;
   }
-
-  memoryEnquiries = all;
-  await safeWriteFile("enquiries.json", all);
+  await writeStore(KEYS.enquiries, all);
   return item;
 }
 
@@ -226,13 +260,11 @@ export async function deleteEnquiry(id: string): Promise<boolean> {
   const all = await getEnquiries();
   const filtered = all.filter((e) => e.id !== id);
   if (filtered.length === all.length) return false;
-
-  memoryEnquiries = filtered;
-  await safeWriteFile("enquiries.json", filtered);
+  await writeStore(KEYS.enquiries, filtered);
   return true;
 }
 
-// ---------------- Backup & Restore Operations ---------------- //
+/* ---------------- Backup & Restore Operations ---------------- */
 
 export async function exportAllData() {
   const siteConfig = await getSiteConfig();
@@ -253,26 +285,13 @@ export async function importAllData(payload: {
   projects?: Project[];
   enquiries?: EnquiryRecord[];
 }) {
-  if (payload.siteConfig) {
-    memorySiteConfig = payload.siteConfig;
-    await safeWriteFile("site-config.json", payload.siteConfig);
-  }
-  if (payload.projects) {
-    memoryProjects = payload.projects;
-    await safeWriteFile("projects.json", payload.projects);
-  }
-  if (payload.enquiries) {
-    memoryEnquiries = payload.enquiries;
-    await safeWriteFile("enquiries.json", payload.enquiries);
-  }
+  if (payload.siteConfig) await writeStore(KEYS.siteConfig, payload.siteConfig);
+  if (payload.projects) await writeStore(KEYS.projects, payload.projects);
+  if (payload.enquiries) await writeStore(KEYS.enquiries, payload.enquiries);
 }
 
 export async function resetToDefaults() {
-  memorySiteConfig = defaultSiteConfig;
-  memoryProjects = defaultProjects;
-  memoryEnquiries = defaultInitialEnquiries;
-
-  await safeWriteFile("site-config.json", defaultSiteConfig);
-  await safeWriteFile("projects.json", defaultProjects);
-  await safeWriteFile("enquiries.json", defaultInitialEnquiries);
+  await writeStore(KEYS.siteConfig, defaultSiteConfig);
+  await writeStore(KEYS.projects, defaultProjects);
+  await writeStore(KEYS.enquiries, defaultInitialEnquiries);
 }

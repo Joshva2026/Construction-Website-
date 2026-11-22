@@ -337,9 +337,8 @@
 
   function setLoggedIn(on) {
     sessionStorage.setItem(SESSION_KEY, on ? "1" : "");
-    $("#adminIcon").hidden = on;           // hide icon when logged in
-    $("#adminModal").hidden = on;          // close modal when logged in
-    $("#admin").hidden = !on;              // show admin panel when logged in
+    $("#adminLogin").hidden = on;
+    $("#adminPanel").hidden = !on;
     if (on) { renderAdmin(); updateBadge(); }
   }
 
@@ -563,23 +562,7 @@
   function bindAdmin() {
     const panel = $("#adminPanel");
 
-    // Admin icon → open login modal
-    $("#adminIcon").addEventListener("click", () => {
-      const modal = $("#adminModal");
-      if (modal) { modal.hidden = false; setTimeout(() => modal.classList.add("open"), 10); }
-    });
-
-    // Modal close button & backdrop → close modal
-    $("#modalClose").addEventListener("click", () => {
-      const modal = $("#adminModal");
-      if (modal) { modal.classList.remove("open"); setTimeout(() => { modal.hidden = true; }, 300); }
-    });
-    $("#modalBackdrop").addEventListener("click", () => {
-      const modal = $("#adminModal");
-      if (modal) { modal.classList.remove("open"); setTimeout(() => { modal.hidden = true; }, 300); }
-    });
-
-    // Login form inside modal
+    // Login form at bottom of page
     $("#loginForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const pw = new FormData(e.target).get("password");
@@ -591,6 +574,11 @@
       } else {
         showMsg($("#loginMsg"), "Incorrect password.", "err");
       }
+    });
+
+    // Logout button in admin panel
+    $("#adminLogoutBtn").addEventListener("click", () => {
+      setLoggedIn(false);
     });
 
     panel.addEventListener("click", async (e) => {

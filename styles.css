@@ -492,76 +492,8 @@ textarea { resize: vertical; }
 .contact-box a { color: var(--accent); text-decoration: none; font-weight: 600; }
 .contact-box a:hover { text-decoration: underline; }
 
-/* ---------- ADMIN ICON & MODAL ---------- */
-.admin-icon {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 200;
-  width: 56px;
-  height: 56px;
-  background: var(--accent);
-  color: var(--ink);
-  border: none;
-  border-radius: 50%;
-  font-size: 1.5rem;
-  cursor: pointer;
-  box-shadow: var(--shadow-lg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform .2s ease, background .2s ease;
-}
-.admin-icon:hover { transform: scale(1.1); background: var(--accent-2); }
-.admin-icon:active { transform: scale(0.95); }
-
-.modal {
-  position: fixed;
-  inset: 0;
-  z-index: 300;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.modal.hidden { display: none !important; }
-.modal-backdrop {
-  position: absolute;
-  inset: 0;
-  background: rgba(15, 20, 28, .6);
-  backdrop-filter: blur(4px);
-}
-.modal-box {
-  position: relative;
-  z-index: 1;
-  background: var(--white);
-  border-radius: 12px;
-  padding: 2rem;
-  max-width: 400px;
-  width: 90%;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: var(--shadow-lg);
-  transform: scale(.95);
-  transition: transform .3s ease;
-}
-.modal.open .modal-box { transform: scale(1); }
-.modal-close {
-  position: absolute;
-  top: 10px;
-  right: 14px;
-  background: none;
-  border: none;
-  font-size: 1.75rem;
-  color: var(--muted);
-  cursor: pointer;
-  line-height: 1;
-}
-.modal-close:hover { color: var(--ink); }
-
-/* Admin panel (full section, shown only after login) */
+/* ---------- ADMIN ---------- */
 .admin { background: var(--paper-2); border-top: 1px solid var(--line); }
-#adminLogin { display: none; }
-
 .admin-bar {
   max-width: 1280px; margin: 0 auto 1.25rem;
   display: flex; justify-content: space-between; align-items: center;

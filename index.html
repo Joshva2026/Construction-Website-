@@ -183,33 +183,25 @@
       </div>
     </section>
 
-    <!-- ADMIN ICON (small floating button, opens login modal on tap) -->
-    <button class="admin-icon" id="adminIcon" aria-label="Admin login" title="Admin">🔐</button>
-
-    <!-- Admin login modal (hidden by default) -->
-    <div id="adminModal" class="modal" hidden>
-      <div class="modal-backdrop" id="modalBackdrop"></div>
-      <div class="modal-box">
-        <button class="modal-close" id="modalClose">&times;</button>
-        <div class="card-form narrow">
-          <form id="loginForm" novalidate>
-            <label>Admin password
-              <input name="password" type="password" required autocomplete="current-password" placeholder="••••••••" />
-            </label>
-            <button type="submit" class="btn full">Open admin</button>
-            <p class="form-msg" id="loginMsg" role="status"></p>
-          </form>
-        </div>
-      </div>
-    </div>
-
-    <!-- ADMIN PANEL (bottom of page, hidden until logged in) -->
-    <section id="admin" class="section admin reveal" hidden>
+    <!-- ADMIN (bottom of page, login form shows first) -->
+    <section id="admin" class="section admin reveal">
       <div class="section-head">
         <p class="eyebrow">Owner only</p>
         <h2>Admin Panel</h2>
       </div>
 
+      <!-- Login form (shows before login) -->
+      <div id="adminLogin" class="card-form narrow">
+        <form id="loginForm" novalidate>
+          <label>Admin password
+            <input name="password" type="password" required autocomplete="current-password" placeholder="••••••••" />
+          </label>
+          <button type="submit" class="btn full">Open admin</button>
+          <p class="form-msg" id="loginMsg" role="status"></p>
+        </form>
+      </div>
+
+      <!-- Admin panel (hidden until logged in) -->
       <div id="adminPanel" hidden>
         <div class="admin-bar">
           <div class="tabs" id="adminTabs">
@@ -219,7 +211,7 @@
             <button data-action="tab" data-tab="enquiries" class="tab">Enquiries <span id="enqBadge"></span></button>
             <button data-action="tab" data-tab="backup" class="tab">Backup &amp; Security</button>
           </div>
-          <button class="btn ghost" data-action="logout">Log out</button>
+          <button class="btn ghost" id="adminLogoutBtn">Log out</button>
         </div>
         <div id="adminBody" class="admin-body"></div>
       </div>

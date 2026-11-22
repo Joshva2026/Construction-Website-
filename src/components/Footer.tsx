@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { siteConfig } from "@/data/site";
+import { siteConfig as defaultSiteConfig, SiteConfig } from "@/data/site";
 
-export default function Footer() {
+export default function Footer({ siteConfig: propSiteConfig }: { siteConfig?: SiteConfig } = {}) {
+  const siteConfig = propSiteConfig || defaultSiteConfig;
   const currentYear = new Date().getFullYear();
 
   return (
@@ -194,7 +195,12 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
-          <p>&copy; {currentYear} {siteConfig.name}, Dindigul, Tamil Nadu. All rights reserved.</p>
+          <p>
+            &copy; {currentYear} {siteConfig.name}, Dindigul, Tamil Nadu. All rights reserved. &bull;{" "}
+            <Link href="/admin" className="hover:text-brand-primary underline transition-colors">
+              Admin Portal
+            </Link>
+          </p>
           <p>Licensed Civil Engineers &bull; Turnkey Civil Contracts &bull; IS 456 / IS 1893 Standards</p>
         </div>
       </div>

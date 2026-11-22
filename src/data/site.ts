@@ -33,6 +33,7 @@ export interface SiteConfig {
     yearsExperience: SiteStat;
     satisfiedClients: SiteStat;
     onTimeDelivery: SiteStat;
+    [key: string]: SiteStat;
   };
   services: SiteService[];
 }
@@ -51,7 +52,6 @@ export const siteConfig: SiteConfig = {
   state: "Tamil Nadu",
   pincode: "624004",
   hours: "Monday - Saturday: 8:30 AM - 7:00 PM (Sunday by Appointment)",
-  // Real Google Maps embed centered directly on Dindigul, Tamil Nadu
   mapEmbedUrl:
     "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d62744.15931668832!2d77.94071373513184!3d10.367312384910815!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b00ab4270c8f5f3%3A0xc6cbfa848d533da8!2sDindigul%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1710000000000!5m2!1sen!2sin",
   stats: {

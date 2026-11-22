@@ -1,0 +1,7 @@
+{
+  "username": "admin",
+  "passwordHash": "f004bf65d682a78003f0a80427b6eac861e551ee1e3cdafc6139d0622de9d9d4628bee75fc9deeebf667d7d078f807e9a938f33c506120f5ecd66eadf4e65ed9",
+  "salt": "9f401f24fad28a6d6f5a672df3226589",
+  "sessionToken": null,
+  "sessionExpires": null
+}

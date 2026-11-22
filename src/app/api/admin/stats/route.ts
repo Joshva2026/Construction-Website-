@@ -1,0 +1,33 @@
+import { NextRequest, NextResponse } from "next/server";
+import { getSiteConfig, updateStats } from "@/lib/data-service";
+import { verifySession, SESSION_COOKIE_NAME } from "@/lib/auth-service";
+
+export const dynamic = "force-dynamic";
+
+async function isAuthorized(req: NextRequest) {
+  const cookie = req.cookies.get(SESSION_COOKIE_NAME);
+  return verifySession(cookie?.value);
+}
+
+export async function GET(_req: NextRequest) {
+  try {
+    const config = await getSiteConfig();
+    return NextResponse.json(config.stats);
+  } catch {
+    return NextResponse.json({ error: "Failed to fetch stats" }, { status: 500 });
+  }
+}
+
+export async function PUT(req: NextRequest) {
+  if (!(await isAuthorized(req))) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    const body = await req.json();
+    const updated = await updateStats(body);
+    return NextResponse.json({ success: true, data: updated });
+  } catch {
+    return NextResponse.json({ error: "Failed to update stats" }, { status: 500 });
+  }
+}

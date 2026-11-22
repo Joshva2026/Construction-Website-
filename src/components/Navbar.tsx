@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { siteConfig } from "@/data/site";
+import { siteConfig as defaultSiteConfig, SiteConfig } from "@/data/site";
 
-export default function Navbar() {
+export default function Navbar({ siteConfig: propSiteConfig }: { siteConfig?: SiteConfig } = {}) {
+  const siteConfig = propSiteConfig || defaultSiteConfig;
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
 

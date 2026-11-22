@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import { siteConfig } from "@/data/site";
+import { getSiteConfig } from "@/lib/data-service";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -60,11 +61,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const liveConfig = await getSiteConfig();
+
   return (
     <html lang="en" className={inter.variable}>
       <body className="min-h-screen flex flex-col font-sans text-slate-800 antialiased bg-brand-paper">
@@ -76,15 +79,15 @@ export default function RootLayout({
           Skip to main content
         </a>
 
-        <Navbar />
+        <Navbar siteConfig={liveConfig} />
 
         <main id="main-content" className="flex-1">
           {children}
         </main>
 
-        <Footer />
+        <Footer siteConfig={liveConfig} />
 
-        <WhatsAppButton />
+        <WhatsAppButton siteConfig={liveConfig} />
       </body>
     </html>
   );

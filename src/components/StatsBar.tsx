@@ -1,12 +1,13 @@
 "use client";
 
-import { siteConfig } from "@/data/site";
+import { siteConfig as defaultSiteConfig, SiteConfig } from "@/data/site";
 import CountUp from "./CountUp";
 
-export default function StatsBar() {
+export default function StatsBar({ stats: propStats }: { stats?: SiteConfig["stats"] } = {}) {
+  const stats = propStats || defaultSiteConfig.stats;
   const statsList = [
     {
-      ...siteConfig.stats.projectsCompleted,
+      ...stats.projectsCompleted,
       icon: (
         <svg className="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
@@ -19,7 +20,7 @@ export default function StatsBar() {
       ),
     },
     {
-      ...siteConfig.stats.yearsExperience,
+      ...stats.yearsExperience,
       icon: (
         <svg className="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
@@ -32,7 +33,7 @@ export default function StatsBar() {
       ),
     },
     {
-      ...siteConfig.stats.satisfiedClients,
+      ...stats.satisfiedClients,
       icon: (
         <svg className="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
@@ -45,7 +46,7 @@ export default function StatsBar() {
       ),
     },
     {
-      ...siteConfig.stats.onTimeDelivery,
+      ...stats.onTimeDelivery,
       icon: (
         <svg className="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path

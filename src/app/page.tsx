@@ -6,23 +6,29 @@ import ProcessSteps from "@/components/ProcessSteps";
 import ProjectCard from "@/components/ProjectCard";
 import CallToAction from "@/components/CallToAction";
 import SectionHeading from "@/components/SectionHeading";
-import { projects } from "@/data/projects";
-import { siteConfig } from "@/data/site";
+import { getProjects, getSiteConfig } from "@/lib/data-service";
 
-export default function HomePage() {
+export const dynamic = "force-dynamic";
+
+export default async function HomePage() {
+  const [siteConfig, projects] = await Promise.all([
+    getSiteConfig(),
+    getProjects(),
+  ]);
+
   // First 3 featured projects
   const featuredProjects = projects.slice(0, 3);
 
   return (
     <>
       {/* Video Hero Section with Playback Controls */}
-      <Hero />
+      <Hero siteConfig={siteConfig} />
 
-      {/* Dynamic Count-Up Key Stats (0 to 126, 0 to 15, etc.) */}
-      <StatsBar />
+      {/* Dynamic Count-Up Key Stats */}
+      <StatsBar stats={siteConfig.stats} />
 
       {/* Services Grid */}
-      <Services />
+      <Services services={siteConfig.services} />
 
       {/* Process Steps */}
       <ProcessSteps />
@@ -42,7 +48,7 @@ export default function HomePage() {
                 href="/projects"
                 className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl text-sm font-bold bg-white text-brand-ink hover:bg-brand-primary hover:text-brand-ink border border-slate-300 shadow-sm transition-all duration-300"
               >
-                <span>View All 126+ Projects</span>
+                <span>View All {projects.length}+ Projects</span>
                 <span aria-hidden="true">&rarr;</span>
               </Link>
             </div>
@@ -59,14 +65,14 @@ export default function HomePage() {
               href="/projects"
               className="inline-flex items-center justify-center w-full px-6 py-4 rounded-xl text-sm font-bold bg-brand-ink text-white hover:bg-brand-ink-3 transition-colors shadow-lg"
             >
-              Explore All 126+ Projects &rarr;
+              Explore All {projects.length}+ Projects &rarr;
             </Link>
           </div>
         </div>
       </section>
 
       {/* Conversion Banner */}
-      <CallToAction />
+      <CallToAction siteConfig={siteConfig} />
     </>
   );
 }

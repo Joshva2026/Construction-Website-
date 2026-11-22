@@ -1,6 +1,7 @@
-import { siteConfig } from "@/data/site";
+import { siteConfig as defaultSiteConfig, SiteConfig } from "@/data/site";
 
-export default function WhatsAppButton() {
+export default function WhatsAppButton({ siteConfig: propSiteConfig }: { siteConfig?: SiteConfig } = {}) {
+  const siteConfig = propSiteConfig || defaultSiteConfig;
   const defaultGreeting = `Hello ${siteConfig.name}, I would like to enquire about your civil engineering and construction services.`;
   const whatsappUrl = `https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(
     defaultGreeting

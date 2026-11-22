@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { siteConfig } from "@/data/site";
+import { siteConfig as defaultSiteConfig, SiteConfig } from "@/data/site";
 import { validateEnquiryForm, ValidationErrors, EnquiryFormData } from "@/lib/validation";
 import { buildWhatsAppUrl, buildMailtoUrl } from "@/lib/enquiry";
 
-export default function EnquiryForm() {
+export default function EnquiryForm({ siteConfig: propSiteConfig }: { siteConfig?: SiteConfig } = {}) {
+  const siteConfig = propSiteConfig || defaultSiteConfig;
   const [formData, setFormData] = useState<EnquiryFormData>({
     name: "",
     phone: "",
@@ -55,6 +56,15 @@ export default function EnquiryForm() {
     }
 
     setErrors({});
+
+    // Automatically record lead in Admin Panel enquiries store
+    fetch("/api/enquiries", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(result.sanitizedData),
+    }).catch(() => {
+      // Non-blocking fallback
+    });
 
     if (actionType === "whatsapp") {
       const url = buildWhatsAppUrl(

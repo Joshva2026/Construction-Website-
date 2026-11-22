@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { siteConfig } from "@/data/site";
+import { siteConfig as defaultSiteConfig, SiteConfig } from "@/data/site";
 
-export default function Hero() {
+export default function Hero({ siteConfig: propSiteConfig }: { siteConfig?: SiteConfig } = {}) {
+  const siteConfig = propSiteConfig || defaultSiteConfig;
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(true);
 

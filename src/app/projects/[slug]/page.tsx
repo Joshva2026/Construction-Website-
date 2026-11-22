@@ -2,9 +2,12 @@ import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getProjectBySlug, getAllProjectSlugs } from "@/data/projects";
-import { siteConfig } from "@/data/site";
+import { getProjectBySlug, getProjects, getSiteConfig } from "@/lib/data-service";
+import { siteConfig as defaultSiteConfig } from "@/data/site";
 import CallToAction from "@/components/CallToAction";
+
+export const dynamic = "force-dynamic";
+export const dynamicParams = true;
 
 interface ProjectDetailPageProps {
   params: {
@@ -13,13 +16,17 @@ interface ProjectDetailPageProps {
 }
 
 export async function generateStaticParams() {
-  return getAllProjectSlugs().map((slug) => ({
-    slug,
+  const projects = await getProjects();
+  return projects.map((p) => ({
+    slug: p.slug,
   }));
 }
 
 export async function generateMetadata({ params }: ProjectDetailPageProps): Promise<Metadata> {
-  const project = getProjectBySlug(params.slug);
+  const [project, siteConfig] = await Promise.all([
+    getProjectBySlug(params.slug),
+    getSiteConfig(),
+  ]);
 
   if (!project) {
     return {
@@ -45,8 +52,11 @@ export async function generateMetadata({ params }: ProjectDetailPageProps): Prom
   };
 }
 
-export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
-  const project = getProjectBySlug(params.slug);
+export default async function ProjectDetailPage({ params }: ProjectDetailPageProps) {
+  const [project, siteConfig] = await Promise.all([
+    getProjectBySlug(params.slug),
+    getSiteConfig(),
+  ]);
 
   if (!project) {
     notFound();
@@ -101,151 +111,135 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
           </div>
         </div>
 
-        {/* Project Key Metrics Strip */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-6 bg-white rounded-2xl border border-brand-line shadow-sm mb-12">
+        {/* Key Metrics / Specification Ribbon */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-6 bg-white rounded-2xl border border-slate-200 shadow-sm mb-12">
           <div>
-            <span className="block text-xs uppercase font-bold tracking-wider text-slate-400">
-              Site Location
+            <span className="block text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              Project Category
             </span>
-            <span className="text-sm sm:text-base font-bold text-slate-900 mt-1 block">
-              {project.location}
-            </span>
-          </div>
-          <div>
-            <span className="block text-xs uppercase font-bold tracking-wider text-slate-400">
-              Category
-            </span>
-            <span className="text-sm sm:text-base font-bold text-slate-900 mt-1 block">
+            <span className="text-base font-extrabold text-brand-ink mt-0.5 block">
               {project.category}
             </span>
           </div>
           <div>
-            <span className="block text-xs uppercase font-bold tracking-wider text-slate-400">
-              Contract Duration
+            <span className="block text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              Total Built-Up Area
             </span>
-            <span className="text-sm sm:text-base font-bold text-slate-900 mt-1 block">
+            <span className="text-base font-extrabold text-brand-ink mt-0.5 block">
+              {project.area}
+            </span>
+          </div>
+          <div>
+            <span className="block text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              Execution Timeline
+            </span>
+            <span className="text-base font-extrabold text-brand-ink mt-0.5 block">
               {project.duration}
             </span>
           </div>
           <div>
-            <span className="block text-xs uppercase font-bold tracking-wider text-slate-400">
-              Built-up Area
+            <span className="block text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              Completion Year
             </span>
-            <span className="text-sm sm:text-base font-bold text-slate-900 mt-1 block">
-              {project.area}
+            <span className="text-base font-extrabold text-brand-primary mt-0.5 block">
+              {project.year}
             </span>
           </div>
         </div>
 
-        {/* Content Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mb-16">
-          {/* Main Description & Scope */}
-          <div className="lg:col-span-2 space-y-8">
-            <section className="bg-white p-8 rounded-2xl border border-brand-line shadow-sm">
-              <h2 className="text-xl font-bold uppercase tracking-tight text-slate-900 mb-4">
-                Project Overview & Summary
-              </h2>
-              <p className="text-slate-600 leading-relaxed text-base">
-                {project.summary}
-              </p>
-            </section>
+        {/* Project Description & Engineering Scope */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start mb-16">
+          <div className="lg:col-span-7 space-y-6">
+            <h2 className="text-2xl font-black uppercase tracking-tight text-brand-ink">
+              Architectural & Structural Summary
+            </h2>
+            <p className="text-base text-slate-700 leading-relaxed">
+              {project.summary}
+            </p>
 
-            <section className="bg-white p-8 rounded-2xl border border-brand-line shadow-sm">
-              <h2 className="text-xl font-bold uppercase tracking-tight text-slate-900 mb-4">
-                Engineering Scope of Work
-              </h2>
-              <ul className="space-y-3.5">
-                {project.scope.map((item, index) => (
-                  <li key={index} className="flex items-start gap-3 text-slate-700 text-sm sm:text-base">
-                    <span className="w-5 h-5 rounded-full bg-brand-primary/20 text-brand-primary flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">
-                      ✓
+            <div className="pt-4 border-t border-slate-200">
+              <h3 className="text-lg font-bold uppercase tracking-tight text-brand-ink mb-3">
+                Key Deliverables & Civil Scope
+              </h3>
+              <ul className="space-y-3">
+                {project.scope.map((item, idx) => (
+                  <li key={idx} className="flex items-start gap-3 text-sm text-slate-700">
+                    <span className="w-5 h-5 rounded-full bg-brand-primary/20 text-brand-ink font-bold flex items-center justify-center text-xs shrink-0 mt-0.5">
+                      &#10003;
                     </span>
                     <span>{item}</span>
                   </li>
                 ))}
               </ul>
-            </section>
+            </div>
 
-            <section className="bg-emerald-50/70 border border-emerald-200 p-8 rounded-2xl shadow-sm">
-              <h2 className="text-xl font-bold uppercase tracking-tight text-emerald-950 mb-3">
-                Project Outcome & Deliverables
-              </h2>
-              <p className="text-emerald-900 text-base leading-relaxed">
+            <div className="p-5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-slate-800">
+              <span className="block text-xs font-bold uppercase tracking-wider text-amber-800 mb-1">
+                Structural Certification & Handover Outcome
+              </span>
+              <p className="text-sm font-medium leading-relaxed">
                 {project.outcome}
               </p>
-            </section>
-          </div>
-
-          {/* Sidebar CTA Card */}
-          <div className="space-y-6">
-            <div className="bg-brand-ink text-white p-8 rounded-2xl shadow-xl border border-slate-800">
-              <span className="text-xs font-bold uppercase tracking-widest text-brand-primary">
-                Inquire With Lead Engineer
-              </span>
-              <h3 className="mt-2 text-2xl font-bold uppercase tracking-tight text-white leading-tight">
-                Planning Similar Work in Tamil Nadu?
-              </h3>
-              <p className="mt-3 text-sm text-slate-300 leading-relaxed">
-                Connect directly with {siteConfig.engineerName} to assess soil feasibility, structural
-                drawings, and fixed turnkey pricing.
-              </p>
-
-              <div className="mt-6 space-y-3">
-                <Link
-                  href="/contact"
-                  className="w-full inline-flex items-center justify-center px-5 py-3.5 rounded-xl text-sm font-bold bg-brand-primary text-brand-ink hover:bg-brand-primary-hover transition-colors shadow-lg"
-                >
-                  Request a Free Quote
-                </Link>
-                <a
-                  href={`https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(
-                    `Hello ${siteConfig.name}, I am interested in building a project similar to "${project.title}" in ${project.location}.`
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full inline-flex items-center justify-center px-5 py-3.5 rounded-xl text-sm font-semibold border border-white/20 text-white hover:bg-white/10 transition-colors"
-                >
-                  Enquire via WhatsApp
-                </a>
-              </div>
-
-              <div className="mt-8 pt-6 border-t border-slate-800 text-xs text-slate-400 space-y-2">
-                <p><strong>Office:</strong> {siteConfig.address}</p>
-                <p><strong>Phone:</strong> {siteConfig.phone}</p>
-                <p><strong>Email:</strong> {siteConfig.email}</p>
-              </div>
             </div>
           </div>
+
+          <aside className="lg:col-span-5 bg-brand-ink text-white p-8 rounded-2xl shadow-xl border border-slate-800 space-y-6">
+            <h3 className="text-xl font-bold uppercase tracking-tight text-white">
+              Interested in a Similar Construction?
+            </h3>
+            <p className="text-xs text-slate-300 leading-relaxed">
+              Consult directly with Er. M. Joshva Priyan for foundation soil assessments, RCC architectural drafting, or complete turnkey execution in Tamil Nadu.
+            </p>
+
+            <div className="space-y-3 pt-2">
+              <Link
+                href="/contact"
+                className="block text-center w-full py-3.5 px-4 rounded-xl bg-brand-primary text-brand-ink font-extrabold text-xs uppercase tracking-wider hover:bg-amber-400 transition-colors shadow-lg"
+              >
+                Request Free Quote
+              </Link>
+              <a
+                href={`https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(
+                  `Hello ${siteConfig.name}, I am interested in building a project similar to "${project.title}".`
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 w-full py-3.5 px-4 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold text-xs uppercase tracking-wider transition-colors"
+              >
+                Chat on WhatsApp
+              </a>
+            </div>
+          </aside>
         </div>
 
-        {/* Gallery Section */}
+        {/* Project Gallery Images */}
         {project.gallery && project.gallery.length > 0 && (
-          <section className="mt-16" aria-label="Project Gallery">
-            <h2 className="text-2xl font-bold uppercase tracking-tight text-slate-900 mb-6">
-              Construction Progress & Site Gallery
+          <div className="space-y-6">
+            <h2 className="text-2xl font-black uppercase tracking-tight text-brand-ink">
+              Project On-Site Gallery
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {project.gallery.map((imgUrl, idx) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {project.gallery.map((img, idx) => (
                 <div
                   key={idx}
-                  className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-slate-900 border border-brand-line shadow-md group"
+                  className="relative aspect-[16/10] rounded-2xl overflow-hidden border border-slate-200 shadow-md bg-slate-900 group"
                 >
                   <Image
-                    src={imgUrl}
-                    alt={`${project.title} site photo ${idx + 1}`}
+                    src={img}
+                    alt={`${project.title} - photo ${idx + 1}`}
                     fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    sizes="(max-width: 768px) 100vw, 50vw"
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 </div>
               ))}
             </div>
-          </section>
+          </div>
         )}
       </div>
 
       <div className="mt-20">
-        <CallToAction />
+        <CallToAction siteConfig={siteConfig} />
       </div>
     </article>
   );

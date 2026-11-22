@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { siteConfig } from "@/data/site";
+import { siteConfig as defaultSiteConfig, SiteConfig } from "@/data/site";
 
-export default function CallToAction() {
+export default function CallToAction({ siteConfig: propSiteConfig }: { siteConfig?: SiteConfig } = {}) {
+  const siteConfig = propSiteConfig || defaultSiteConfig;
   return (
     <section className="bg-slate-950 text-white py-16 sm:py-24 relative overflow-hidden">
       {/* Decorative safety gold ambient glow */}

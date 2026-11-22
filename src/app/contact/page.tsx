@@ -1,7 +1,10 @@
 import { Metadata } from "next";
 import EnquiryForm from "@/components/EnquiryForm";
 import SectionHeading from "@/components/SectionHeading";
-import { siteConfig } from "@/data/site";
+import { getSiteConfig } from "@/lib/data-service";
+import { siteConfig as defaultSiteConfig } from "@/data/site";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Contact & Free Quote | Dindigul, Tamil Nadu",
@@ -9,7 +12,9 @@ export const metadata: Metadata = {
     "Request a free structural or construction quote from Joshva Construction in Dindigul, Tamil Nadu. Connect with Er. M. Joshva Priyan via WhatsApp or email for turnkey villas, site supervision, and architectural planning.",
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const siteConfig = await getSiteConfig();
+
   return (
     <div className="py-12 sm:py-20 bg-brand-paper min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -23,7 +28,7 @@ export default function ContactPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
           {/* Main Enquiry Form */}
           <div className="lg:col-span-7">
-            <EnquiryForm />
+            <EnquiryForm siteConfig={siteConfig} />
           </div>
 
           {/* Contact Details & Company Info Aside */}
@@ -105,7 +110,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <span className="block text-xs uppercase font-bold text-slate-400">Office Location</span>
-                    <span className="text-white font-medium">{siteConfig.address}</span>
+                    <p className="text-slate-200 font-medium">{siteConfig.address}</p>
                   </div>
                 </li>
 
@@ -121,24 +126,34 @@ export default function ContactPage() {
                     </svg>
                   </div>
                   <div>
-                    <span className="block text-xs uppercase font-bold text-slate-400">Operating Hours</span>
-                    <span className="text-white font-medium">{siteConfig.hours}</span>
+                    <span className="block text-xs uppercase font-bold text-slate-400">Office Timings</span>
+                    <p className="text-slate-200 font-medium">{siteConfig.hours}</p>
                   </div>
                 </li>
               </ul>
+
+              <div className="mt-8 pt-6 border-t border-slate-800">
+                <a
+                  href={`https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(
+                    `Hello ${siteConfig.name}, I want to schedule an engineering meeting with Er. M. Joshva Priyan.`
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-lg"
+                >
+                  <span>Chat Direct on WhatsApp</span>
+                </a>
+              </div>
             </div>
 
-            {/* Embedded Google Maps Centered on Dindigul, Tamil Nadu */}
-            <div className="bg-white rounded-2xl overflow-hidden border border-brand-line shadow-sm">
-              <div className="p-4 border-b border-slate-100 flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-800">
-                  Office Map &bull; Dindigul, Tamil Nadu
-                </span>
-                <span className="text-xs text-brand-primary font-bold">Palani Road Area</span>
-              </div>
-              <div className="w-full aspect-[4/3] bg-slate-100">
+            {/* Google Maps Location Preview */}
+            <div className="rounded-2xl overflow-hidden border border-slate-200 bg-white p-3 shadow-md">
+              <span className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2 px-1">
+                Headquarters Map &bull; Dindigul, Tamil Nadu
+              </span>
+              <div className="aspect-[4/3] w-full rounded-xl overflow-hidden border border-slate-100 bg-slate-100">
                 <iframe
-                  title="Joshva Construction Office Location Map"
+                  title="Joshva Construction Location in Dindigul"
                   src={siteConfig.mapEmbedUrl}
                   width="100%"
                   height="100%"

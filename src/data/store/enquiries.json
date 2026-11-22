@@ -1,0 +1,25 @@
+[
+  {
+    "id": "enq-sample-1",
+    "name": "Ramanathan K.",
+    "phone": "+91 94431 23456",
+    "email": "ramanathan.dgl@gmail.com",
+    "projectType": "Residential Villa (3BHK Duplex)",
+    "preferredContact": "WhatsApp",
+    "message": "We have a 2400 sq ft plot near Palani Road. Looking for complete turnkey RCC duplex construction with Vaastu compliance.",
+    "createdAt": "2026-11-20T10:36:01.840Z",
+    "status": "New"
+  },
+  {
+    "id": "enq-sample-2",
+    "name": "S. Murugesan",
+    "phone": "+91 98422 78910",
+    "email": "murugesan_builders@yahoo.com",
+    "projectType": "Commercial Building",
+    "preferredContact": "Phone Call",
+    "message": "Need structural consultancy and drawing approval for a G+3 commercial shopping complex near Collectorate.",
+    "createdAt": "2026-11-17T10:36:01.840Z",
+    "status": "Contacted",
+    "notes": "Called client on Tuesday. Site inspection scheduled."
+  }
+]

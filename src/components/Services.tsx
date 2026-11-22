@@ -1,8 +1,9 @@
 import Image from "next/image";
-import { siteConfig } from "@/data/site";
+import { siteConfig as defaultSiteConfig, SiteService } from "@/data/site";
 import SectionHeading from "./SectionHeading";
 
-export default function Services() {
+export default function Services({ services: propServices }: { services?: SiteService[] } = {}) {
+  const services = propServices || defaultSiteConfig.services;
   return (
     <section className="py-20 sm:py-28 bg-brand-paper relative" id="services">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -14,7 +15,7 @@ export default function Services() {
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {siteConfig.services.map((service) => (
+          {services.map((service) => (
             <article
               key={service.id}
               className="group bg-white rounded-2xl overflow-hidden border border-brand-line shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col"

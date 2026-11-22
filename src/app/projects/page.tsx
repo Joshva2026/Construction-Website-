@@ -4,15 +4,18 @@ import ProjectFilter from "@/components/ProjectFilter";
 import ProjectCard from "@/components/ProjectCard";
 import SectionHeading from "@/components/SectionHeading";
 import CallToAction from "@/components/CallToAction";
-import { projects } from "@/data/projects";
-import { siteConfig } from "@/data/site";
+import { getProjects, getSiteConfig } from "@/lib/data-service";
+import { Project } from "@/data/projects";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Projects & Engineering Portfolio | Dindigul, Tamil Nadu",
-  description: `Explore delivered and active construction projects by ${siteConfig.name} across Dindigul, Madurai, Trichy, and Tamil Nadu. Residential villas, commercial towers, and industrial warehouses.`,
+  description:
+    "Explore delivered and active construction projects by Joshva Construction across Dindigul, Madurai, Trichy, and Tamil Nadu. Residential villas, commercial towers, and industrial warehouses.",
 };
 
-function ProjectsList({ category }: { category?: string }) {
+function ProjectsList({ projects, category }: { projects: Project[]; category?: string }) {
   const filteredProjects = projects.filter((project) => {
     if (!category || category === "All") return true;
     return project.category.toLowerCase() === category.toLowerCase();
@@ -45,18 +48,23 @@ function ProjectsList({ category }: { category?: string }) {
   );
 }
 
-export default function ProjectsPage({
+export default async function ProjectsPage({
   searchParams,
 }: {
   searchParams: { category?: string };
 }) {
+  const [siteConfig, projects] = await Promise.all([
+    getSiteConfig(),
+    getProjects(),
+  ]);
+
   const selectedCategory = searchParams?.category;
 
   return (
     <div className="py-14 sm:py-24 bg-brand-paper min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeading
-          eyebrow="126+ Proven Milestones"
+          eyebrow={`${projects.length}+ Proven Milestones`}
           title={`Civil & Structural Portfolio in ${siteConfig.city}`}
           description="Explore our delivered civil constructions, active working sites, and structural engineering assignments across Dindigul and South India."
           align="center"
@@ -69,12 +77,12 @@ export default function ProjectsPage({
             </div>
           }
         >
-          <ProjectsList category={selectedCategory} />
+          <ProjectsList projects={projects} category={selectedCategory} />
         </Suspense>
       </div>
 
       <div className="mt-24">
-        <CallToAction />
+        <CallToAction siteConfig={siteConfig} />
       </div>
     </div>
   );

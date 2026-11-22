@@ -16,7 +16,7 @@ const DEFAULT_DATA = {
     footerNote: "Licensed civil engineer. Quality, safety and on-time delivery."
   },
   heroMedia: {
-    video: "assets/site-timelapse-scroll.mp4",
+    video: "",
     photos: []
   },
   adminHash: null,

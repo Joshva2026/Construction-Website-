@@ -209,7 +209,14 @@
         if (!hero.isMobile) v.play().catch(() => {}); // autoplay on desktop
         onScrollHero();
       });
-      v.addEventListener("error", () => showHeroEmpty("The hero video could not be loaded. Check the video path in admin Settings."));
+      v.addEventListener("error", () => {
+        // Fall back to photos if video fails
+        if (Array.isArray(m.photos) && m.photos.length) {
+          setupHeroPhotos(m.photos);
+        } else {
+          showHeroEmpty("The hero video could not be loaded. Check the video path in admin Settings.");
+        }
+      });
       container.appendChild(v);
       hero.video = v;
       v.load();
@@ -234,6 +241,24 @@
       hero.video.play().catch(() => {});
     }
 
+    onScrollHero();
+  }
+
+  function setupHeroPhotos(photos) {
+    const container = $("#heroMedia");
+    container.innerHTML = "";
+    hero.video = null;
+    hero.photos = photos.map((src, i) => {
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = "";
+      img.loading = "lazy";
+      if (i === 0) img.classList.add("active", "loaded");
+      else img.classList.add("loaded");
+      container.appendChild(img);
+      return img;
+    });
+    hero.ready = true;
     onScrollHero();
   }
 

@@ -16,8 +16,13 @@ const DEFAULT_DATA = {
     footerNote: "Licensed civil engineer. Quality, safety and on-time delivery."
   },
   heroMedia: {
-    video: "",
-    photos: []
+    video: "assets/site-timelapse-scroll.mp4",
+    photos: [
+      "https://images.unsplash.com/photo-1541888946425-d81bb19940f2?w=1200&q=80",
+      "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1200&q=80",
+      "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1200&q=80",
+      "https://images.unsplash.com/photo-1581589127319-27996835facc?w=1200&q=80"
+    ]
   },
   adminHash: null,
   workingSites: [

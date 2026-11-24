@@ -27,7 +27,12 @@ export async function PUT(req: NextRequest) {
     const body = await req.json();
     const updated = await updateSiteConfig(body);
     return NextResponse.json({ success: true, data: updated });
-  } catch {
-    return NextResponse.json({ error: "Failed to update site config" }, { status: 500 });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Unknown error";
+    console.error("[site-config] save failed:", message);
+    return NextResponse.json(
+      { error: `Failed to update site config: ${message}` },
+      { status: 500 }
+    );
   }
 }

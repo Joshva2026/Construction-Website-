@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Hero from "@/components/Hero";
+import CinematicVideoCard from "@/components/CinematicVideoCard";
 import StatsBar from "@/components/StatsBar";
 import Services from "@/components/Services";
 import ProcessSteps from "@/components/ProcessSteps";
@@ -23,6 +24,15 @@ export default async function HomePage() {
     <>
       {/* Video Hero Section with Playback Controls */}
       <Hero siteConfig={siteConfig} />
+
+      {/* Second video: rises into view as the visitor scrolls past the hero */}
+      <CinematicVideoCard
+        src="/images/site-showcase.mp4"
+        poster="/images/site-showcase-poster.jpg"
+        eyebrow="See the build"
+        title="From foundation to finished home"
+        caption={`${siteConfig.city}, ${siteConfig.state} · Built by ${siteConfig.engineerName}`}
+      />
 
       {/* Dynamic Count-Up Key Stats */}
       <StatsBar stats={siteConfig.stats} />
